@@ -53,7 +53,7 @@ The Mac proof shows Docker version `29.6.1`, build `8900f1d`.
 
 The Kali proof shows Docker version `28.5.2`.
 
-<img width="729" height="69" alt="1 docker" src="https://github.com/user-attachments/assets/c843bbee-6aac-4e9d-8a58-7dc4bf0c55f2" />
+![Docker Version](Evidence/docker%20version.png)
 
 The guide also recommends confirming Docker can run containers with:
 
@@ -88,12 +88,12 @@ aws --version
 
 The Mac proof shows AWS CLI version `2.36.8`.
 
-<img width="639" height="61" alt="2 awscli" src="https://github.com/user-attachments/assets/a381d0ec-e0b2-4727-badd-b3e2f03b4fef" />
+![AWS CLI Version](Evidence/version%20aws.png)
 
 
 The Kali proof shows AWS CLI version `2.36.9`.
 
-<img width="714" height="76" alt="2 awscli" src="https://github.com/user-attachments/assets/5905bbe6-f23b-4cab-858e-88d5bbabcfee" />
+![AWS CLI Version](Evidence/version%20aws.png)
 
 No real AWS account is required for this lab because AWS CLI commands are pointed to LocalStack.
 
@@ -123,22 +123,16 @@ kind --version
 kubectl version --client
 ```
 
-The Mac proof shows:
-
-- kind version `0.32.0`
-- kubectl client version `v1.36.1`
-- Kustomize version `v5.8.1`
-
-<img width="372" height="73" alt="3 kind_kubectl" src="https://github.com/user-attachments/assets/5fdd5883-97e1-46ad-b8cc-6f011b217d45" />
+![kind Version](Evidence/kind%20version.png)
 
 The Kali proof shows:
 
-- kind version `0.32.0`
-- kubectl client version `v1.33.4`
-- Kustomize version `v5.5.0`
+- kind version `0.33.0`
+- kubectl client version `v1.36.4`
+- Kustomize version `v5.8.1`
 
-<img width="281" height="124" alt="3 kubectl" src="https://github.com/user-attachments/assets/aaed1ba6-5da6-41f7-86c9-f167657a579b" />
-<img width="213" height="64" alt="3 1-kind" src="https://github.com/user-attachments/assets/b4b81d4f-ba9a-4708-bfc1-7f148d897ee6" />
+![kubectl Version](Evidence/kubectl%20version.png)
+![kind Version](Evidence/kind%20version.png)
 
 ## Step 4: Install and Verify Helper Tools
 
@@ -157,19 +151,12 @@ openssl version
 oathtool --version
 ```
 
-The Mac proof shows:
-
-- OpenSSL `3.6.3`
-- oathtool / OATH Toolkit `2.6.14`
-
-<img width="1191" height="147" alt="4 Helper_tools" src="https://github.com/user-attachments/assets/41450a83-e696-482a-90a7-ab4a0f333263" />
-
 The Kali proof shows:
 
-- OpenSSL `3.5.4`
-- oathtool / OATH Toolkit `2.6.14`
+- OpenSSL `3.0.13`
+- oathtool / OATH Toolkit `2.6.11`
 
-<img width="767" height="225" alt="4 Helper" src="https://github.com/user-attachments/assets/ab5ee65a-285b-4074-bf6f-0dff1ba4ba15" />
+![openssl and oathtoll Version](Evidence/openssl and oathtool%20version.png)
 
 Trivy does not require a separate installation for this setup because the guide runs it through Docker:
 
@@ -202,11 +189,11 @@ docker ps
 
 The health endpoint returned available services, and `docker ps` showed the LocalStack container running with a healthy status on port `4566`.
 
-<img width="1280" height="164" alt="5 localstack" src="https://github.com/user-attachments/assets/d5d11631-185a-45aa-b216-40069d216fbe" />
+![LocalStack Docker PS](Evidence/localstack%20docker%20ps.png)
 
 The Kali proof shows the `localstack/localstack:3.0` container running with a healthy status and port `4566` mapped.
 
-<img width="1493" height="165" alt="5 localstack" src="https://github.com/user-attachments/assets/29649b39-b099-427a-9185-3d83407240b8" />
+![LocalStack Docker PS](Evidence/localstack%20health%20.png)
 
 Useful LocalStack lifecycle commands from the guide:
 
