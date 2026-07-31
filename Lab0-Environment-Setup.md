@@ -4,7 +4,8 @@
 
 **Course:** IKB42603 Cloud Computing Security Essentials  
 **Lab:** Lab 0 - Environment Setup   
-**Name:** Student name 
+**Name:** Muhamad Izzat Akif Bin Mohd Sanusi
+<br> **ID:** 52215124688
 <br> **Date:** 27 July 2026  
 
 ## Objective
@@ -19,13 +20,13 @@ Evidence is provided for both the Mac environment and the Kali environment.
 
 | Component | Mac Verified Version / Status | Mac Proof | Kali Verified Version / Status | Kali Proof |
 | --- | --- | --- | --- | --- |
-| Docker | Docker version 29.6.1 | `Evidence/1.docker.png` | Docker version 28.5.2 | `Evidence/kali/1.docker.png` |
-| AWS CLI | aws-cli/2.36.8 | `Evidence/2.awscli.png` | aws-cli/2.36.9 | `Evidence/kali/2.awscli.png` |
-| kind | kind v0.32.0 | `Evidence/3.kind_kubectl.png` | kind v0.32.0 | `Evidence/kali/3.1-kind.png` |
-| kubectl | Client version v1.36.1, Kustomize v5.8.1 | `Evidence/3.kind_kubectl.png` | Client version v1.33.4, Kustomize v5.5.0 | `Evidence/kali/3.kubectl.png` |
-| OpenSSL | OpenSSL 3.6.3 | `Evidence/4.Helper_tools.png` | OpenSSL 3.5.4 | `Evidence/kali/4.Helper.png` |
-| oathtool | OATH Toolkit 2.6.14 | `Evidence/4.Helper_tools.png` | OATH Toolkit 2.6.14 | `Evidence/kali/4.Helper.png` |
-| LocalStack | Running and healthy on port 4566 | `Evidence/5.localstack.png` | Running and healthy on port 4566 | `Evidence/kali/5.localstack.png` |
+| Docker | Docker version 29.6.1 | `Evidence/docker version.png` | Docker version 28.5.2 | `Evidence/kali/1.docker.png` |
+| AWS CLI | aws-cli/2.36.8 | `Evidence/version aws.png` | aws-cli/2.36.9 | `Evidence/kali/2.awscli.png` |
+| kind | kind v0.32.0 | `Evidence/kind version.png` | kind v0.32.0 | `Evidence/kali/3.1-kind.png` |
+| kubectl | Client version v1.36.1, Kustomize v5.8.1 | `Evidence/kubectl version.png` | Client version v1.33.4, Kustomize v5.5.0 | `Evidence/kali/3.kubectl.png` |
+| OpenSSL | OpenSSL 3.6.3 | `Evidence/openssl and oathtool version.png` | OpenSSL 3.5.4 | `Evidence/kali/4.Helper.png` |
+| oathtool | OATH Toolkit 2.6.14 | `Evidence/oathtool version.png` | OATH Toolkit 2.6.14 | `Evidence/kali/4.Helper.png` |
+| LocalStack | Running and healthy on port 4566 | `Evidence/localstack health.png` | Running and healthy on port 4566 | `Evidence/kali/5.localstack.png` |
 | Kubernetes | kind cluster `ccse` running with node `ccse-control-plane` ready | `Evidence/5.1.kubenetes.png` | kind cluster `ccse` running with node `ccse-control-plane` ready | `Evidence/kali/5.1.kubenetes.png` |
 | AWS CLI LocalStack endpoint | Dummy credentials and endpoint variable configured | `Evidence/6.one-time.png` | Dummy credentials configured and STS caller identity tested through LocalStack | `Evidence/kali/6-config.png` |
 
