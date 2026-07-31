@@ -49,7 +49,7 @@ docker --version
 
 The Mac proof shows Docker version `29.6.1`, build `8900f1d`.
 
-<img width="646" height="81" alt="1 docker" src="https://github.com/user-attachments/assets/37dd09a8-cee1-4347-8d87-dd8bf0f629a3" />
+![Docker Version](Evidence/1.docker.png)
 
 The Kali proof shows Docker version `28.5.2`.
 
