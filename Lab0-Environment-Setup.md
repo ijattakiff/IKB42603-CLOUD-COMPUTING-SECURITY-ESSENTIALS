@@ -20,8 +20,8 @@ Evidence is provided for both the Mac environment and the Kali environment.
 
 | Component | Mac Verified Version / Status | Mac Proof | Kali Verified Version / Status | Kali Proof |
 | --- | --- | --- | --- | --- |
-| Docker | Docker version 29.6.1 | `Evidence/docker version.png` | Docker version 28.5.2 | `Evidence/kali/1.docker.png` |
-| AWS CLI | aws-cli/2.36.8 | `Evidence/version aws.png` | aws-cli/2.36.9 | `Evidence/kali/2.awscli.png` |
+| Docker | Docker version 29.6.1 | `Evidence/docker version.png` | Docker version 28.5.2 | `Evidence/docker version.png` |
+| AWS CLI | aws-cli/2.36.8 | `Evidence/version aws.png` | aws-cli/2.36.9 | `Evidence/version aws.png` |
 | kind | kind v0.32.0 | `Evidence/kind version.png` | kind v0.32.0 | `Evidence/kali/3.1-kind.png` |
 | kubectl | Client version v1.36.1, Kustomize v5.8.1 | `Evidence/kubectl version.png` | Client version v1.33.4, Kustomize v5.5.0 | `Evidence/kali/3.kubectl.png` |
 | OpenSSL | OpenSSL 3.6.3 | `Evidence/openssl and oathtool version.png` | OpenSSL 3.5.4 | `Evidence/kali/4.Helper.png` |
