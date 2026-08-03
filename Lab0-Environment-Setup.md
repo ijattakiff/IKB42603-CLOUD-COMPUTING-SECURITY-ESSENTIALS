@@ -189,7 +189,7 @@ docker ps
 
 The health endpoint returned available services, and `docker ps` showed the LocalStack container running with a healthy status on port `4566`.
 
-![LocalStack Docker PS](Evidence/docker%20ps.png)
+![LocalStack Docker PS](Evidence/localstack%20docker%20ps.png)
 
 The Kali proof shows the `localstack/localstack:3.0` container running with a healthy status and port `4566` mapped.
 
