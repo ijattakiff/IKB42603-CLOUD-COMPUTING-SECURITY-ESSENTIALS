@@ -20,12 +20,12 @@ Evidence is provided for both the Mac environment and the Kali environment.
 
 | Component | Mac Verified Version / Status | Mac Proof | Kali Verified Version / Status | Kali Proof |
 | --- | --- | --- | --- | --- |
-| Docker | Docker version 29.6.1 | `Evidence/docker version.png` | Docker version 28.5.2 | `Evidence/docker version.png` |
-| AWS CLI | aws-cli/2.36.8 | `Evidence/version aws.png` | aws-cli/2.36.9 | `Evidence/version aws.png` |
-| kind | kind v0.32.0 | `Evidence/kind version.png` | kind v0.32.0 | `Evidence/kali/3.1-kind.png` |
-| kubectl | Client version v1.36.1, Kustomize v5.8.1 | `Evidence/kubectl version.png` | Client version v1.33.4, Kustomize v5.5.0 | `Evidence/kali/3.kubectl.png` |
-| OpenSSL | OpenSSL 3.6.3 | `Evidence/openssl and oathtool version.png` | OpenSSL 3.5.4 | `Evidence/kali/4.Helper.png` |
-| oathtool | OATH Toolkit 2.6.14 | `Evidence/oathtool version.png` | OATH Toolkit 2.6.14 | `Evidence/kali/4.Helper.png` |
+| Docker | Docker version 29.1.2 | `Evidence/docker version.png` | Docker version 29.1.3 | `Evidence/docker version.png` |
+| AWS CLI | aws-cli/2.36.9 | `Evidence/version aws.png` | aws-cli/2.36.9 | `Evidence/version aws.png` |
+| kind | kind v0.33.0 | `Evidence/kind version.png` | kind v0.33.0 | `Evidence/kali/3.1-kind.png` |
+| kubectl | Client version v1.36.3, Kustomize v5.8.1 | `Evidence/kubectl version.png` | Client version v1.36.3, Kustomize v5.8.0 | `Evidence/kali/3.kubectl.png` |
+| OpenSSL | OpenSSL 3.0.13 | `Evidence/openssl and oathtool version.png` | OpenSSL 3.0.13 | `Evidence/kali/4.Helper.png` |
+| oathtool | OATH Toolkit 2.6.11 | `Evidence/oathtool version.png` | OATH Toolkit 2.6.11 | `Evidence/kali/4.Helper.png` |
 | LocalStack | Running and healthy on port 4566 | `Evidence/localstack health.png` | Running and healthy on port 4566 | `Evidence/kali/5.localstack.png` |
 | Kubernetes | kind cluster `ccse` running with node `ccse-control-plane` ready | `Evidence/5.1.kubenetes.png` | kind cluster `ccse` running with node `ccse-control-plane` ready | `Evidence/kali/5.1.kubenetes.png` |
 | AWS CLI LocalStack endpoint | Dummy credentials and endpoint variable configured | `Evidence/6.one-time.png` | Dummy credentials configured and STS caller identity tested through LocalStack | `Evidence/kali/6-config.png` |
