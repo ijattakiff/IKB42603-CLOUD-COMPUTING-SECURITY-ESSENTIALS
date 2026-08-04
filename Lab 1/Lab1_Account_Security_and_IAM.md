@@ -282,7 +282,7 @@ The local kind cluster `ccse-lab1` was created and kubectl was configured to use
 
 Evidence:
 
-![SetupTask B](Evidence_Lab1/Setuptask%20B.png)
+![SetupTask B](Evidence_Lab1/SetupTask%20B.png)
 
 ## Task 5: Separate Environments with Namespaces
 
