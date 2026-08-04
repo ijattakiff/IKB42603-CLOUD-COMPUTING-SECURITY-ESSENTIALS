@@ -282,7 +282,7 @@ The local kind cluster `ccse-lab1` was created and kubectl was configured to use
 
 Evidence:
 
-![SetupTask B](./Evidence_Lab1/SetupTask_B.png)
+![SetupTask B](./Evidence_Lab1/SetupTask%20B.png)
 
 ## Task 5: Separate Environments with Namespaces
 
@@ -300,7 +300,7 @@ The namespaces `dev` and `prod` were created and listed as `Active`.
 
 Evidence:
 
-![Task 5](Evidence_Lab1/Task%205.png)
+![Task 5](./Evidence_Lab1/Task5.png)
 
 ## Task 6: Define a Role and Bind It
 
@@ -344,7 +344,7 @@ The RoleBinding `dev-user-binding` binds the `pod-reader` Role to the `dev-user`
 
 Evidence:
 
-![Task 6](Evidence_Lab1/Task%206.png)
+![Task 6](./Evidence_Lab1/Task%206.png)
 
 ## Task 7: Test Access Control
 
@@ -412,7 +412,7 @@ The service account cannot list pods in `prod` because the Role and RoleBinding 
 
 Evidence:
 
-![Task7](Evidence_Lab1/Task7.png)
+![Task 7](./Evidence_Lab1/Task%207.png)
 
 ### Authentication vs Authorization
 
