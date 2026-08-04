@@ -21,19 +21,19 @@ All screenshots used for this report are stored in the `Evidence` folder.
 | Evidence File | Purpose |
 |---|---|
 | `Task2.1.png` | Commands for creating the admin group, attaching policy, creating admin user and verifying membership |
-| `2.1-Group-Policy.png` | `Admins` group creation output |
-| `2.2-Personal-Admin.png` | `CloudAdmin_dani` admin user creation output |
-| `2.4-Verify-Membership.png` | `CloudAdmin_dani` membership in `Admins` group |
-| `3.1-create-user.png` | `Analyst_jiha` read-only user creation output |
-| `3.3-ListPermission-User.png` | `AmazonS3ReadOnlyAccess` attached to `Analyst_jiha` |
-| `4.1-access-key.png` | Access key creation for `Analyst_jiha` |
-| `4.2-List-access-Keys.png` | Access key listing for `Analyst_jiha` |
-| `4-Credential&AccessKeys.png` | Access key rotation command showing deactivation |
-| `SessionB-Setup.png` | kind Kubernetes cluster setup |
-| `5-Env-Namespace.png` | `dev` and `prod` namespace creation |
-| `6-role-bind.png` | Service account, Role and RoleBinding creation |
-| `7-test.png` | RBAC authorization test results |
-| `Verification-RBAC.png` | RoleBinding YAML verification |
+| `Task2.1.png` | `Admins` group creation output |
+| `Task2.2.png` | `CloudAdmin_Izzat` admin user creation output |
+| `Task2.3.png` | `CloudAdmin_izzat` membership in `Admins` group |
+| `Task2.4.png` | `Analyst_Akif` read-only user creation output |
+| `Task3.1.png` | `AmazonS3ReadOnlyAccess` attached to `Analyst_Akif` |
+| `Task3.3.png` | Access key creation for `Analyst_Akif` |
+| `Task4.1.png` | Access key listing for `Analyst_Akif` |
+| `Task4.2.png` | Access key rotation command showing deactivation |
+| `SetupTask B.png` | kind Kubernetes cluster setup |
+| `Task5.png` | `dev` and `prod` namespace creation |
+| `Task6.png` | Service account, Role and RoleBinding creation |
+| `Task7.png` | RBAC authorization test results |
+| `RBAC Verification.png` | RoleBinding YAML verification |
 
 ## Task 1: Map the Cloud Identity Landscape
 
@@ -300,7 +300,7 @@ The namespaces `dev` and `prod` were created and listed as `Active`.
 
 Evidence:
 
-![Task5](Evidence_Lab1/Task5.png)
+![Task 5](Evidence_Lab1/Task%205.png)
 
 ## Task 6: Define a Role and Bind It
 
@@ -344,7 +344,7 @@ The RoleBinding `dev-user-binding` binds the `pod-reader` Role to the `dev-user`
 
 Evidence:
 
-![Task6](Evidence_Lab1/Task6.png)
+![Task 6](Evidence_Lab1/Task%206.png)
 
 ## Task 7: Test Access Control
 
