@@ -98,25 +98,15 @@ Verification command:
 ```bash
 aws $EP iam list-attached-group-policies --group-name Admins
 ```
-
-Output:
-
-```json
-{
-    "AttachedPolicies": [
-        {
-            "PolicyName": "AdministratorAccess",
-            "PolicyArn": "arn:aws:iam::aws:policy/AdministratorAccess"
-        }
-    ]
-}
 ```
 
 This proves that the `AdministratorAccess` policy was attached to the `Admins` group.
 
+```bash
+
 Evidence:
 
-![Least privilege admin commands](Evidence/2-Least-privilege.png)
+![Task2.1](Evidence_Lab1/Task2.1.png)
 
 ### Step 2.3: Create Personal Admin User
 
