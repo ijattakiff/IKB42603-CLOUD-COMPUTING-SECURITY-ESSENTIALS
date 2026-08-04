@@ -62,15 +62,6 @@ Verification command:
 ```bash
 aws --endpoint-url=http://localhost:4566 sts get-caller-identity
 ```
-
-Output:
-
-```json
-{
-    "UserId": "000000000000",
-    "Account": "000000000000",
-    "Arn": "arn:aws:iam::000000000000:root"
-}
 ```
 
 The account ID `000000000000` confirms the commands were executed against LocalStack.
