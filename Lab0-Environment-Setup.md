@@ -225,11 +225,11 @@ The Mac proof confirms:
 - Node `ccse-control-plane` is `Ready`
 - Kubernetes version is `v1.36.1`
 
-<img width="1147" height="135" alt="5 1 kubenetes" src="https://github.com/user-attachments/assets/f9eab168-faed-420b-9dcf-ceed899e429d" />
+![Kuberctl Cluster](Evidence/kubectl%20cluster.png)
 
 The Kali proof confirms the same `ccse` kind cluster status, with node `ccse-control-plane` in the `Ready` state.
 
-<img width="1147" height="135" alt="5 1 kubenetes" src="https://github.com/user-attachments/assets/02eecdcc-9f0d-4f7e-ac87-71045efce38f" />
+![Kuberctl Cluster](Evidence/kubectl%20cluster.png)
 
 The guide removes the cluster with:
 
@@ -260,11 +260,9 @@ The Mac proof shows the dummy AWS CLI values configured and the endpoint variabl
 EP='--endpoint-url=http://localhost:4566'
 ```
 
-<img width="1151" height="63" alt="6 one-time" src="https://github.com/user-attachments/assets/c0f074e5-686b-4ffb-b9be-1babd85b8953" />
-
 The Kali proof shows the dummy credentials configured, the endpoint variable set, and `aws $EP sts get-caller-identity` returning a LocalStack test identity.
 
-<img width="469" height="307" alt="6-config" src="https://github.com/user-attachments/assets/009166ad-cb36-4cc5-b0ee-34d5c2852184" />
+![access key](Evidence/access%20key.png)
 
 This ensures AWS CLI commands target LocalStack instead of real AWS services.
 
