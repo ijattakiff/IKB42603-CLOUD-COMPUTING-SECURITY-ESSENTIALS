@@ -103,6 +103,7 @@ aws $EP iam list-attached-group-policies --group-name Admins
 This proves that the `AdministratorAccess` policy was attached to the `Admins` group.
 
 ```bash
+```
 
 Evidence:
 
