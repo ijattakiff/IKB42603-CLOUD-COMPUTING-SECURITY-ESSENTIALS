@@ -20,7 +20,7 @@ All screenshots used for this report are stored in the `Evidence` folder.
 
 | Evidence File | Purpose |
 |---|---|
-| `2-Least-privilege.png` | Commands for creating the admin group, attaching policy, creating admin user and verifying membership |
+| `Task2.1.png` | Commands for creating the admin group, attaching policy, creating admin user and verifying membership |
 | `2.1-Group-Policy.png` | `Admins` group creation output |
 | `2.2-Personal-Admin.png` | `CloudAdmin_dani` admin user creation output |
 | `2.4-Verify-Membership.png` | `CloudAdmin_dani` membership in `Admins` group |
