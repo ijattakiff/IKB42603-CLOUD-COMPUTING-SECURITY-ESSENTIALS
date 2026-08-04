@@ -1,10 +1,11 @@
 # Lab 1: Cloud Account Security, Identity and Access Management
 
 **Course:** IKB42603 Cloud Computing Security Essentials  
-**Lab:** Lab 1
+<br> **Lab:** Lab 1
 **Topic:** Identity governance, least privilege, LocalStack IAM and Kubernetes RBAC  
 **Environment:** LocalStack on `localhost:4566` and kind Kubernetes cluster `ccse-lab1`
-<br> **Name:** Student Name
+<br> **Name:** Muhamad Izzat A'kif Bin Mohd Sanusi
+<br> **ID:** 52215124688
 
 ## Lab Summary // Objective
 
