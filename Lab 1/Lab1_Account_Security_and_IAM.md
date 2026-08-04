@@ -107,7 +107,7 @@ This proves that the `AdministratorAccess` policy was attached to the `Admins` g
 
 Evidence:
 
-![Task2.1](Evidence_Lab1/Task2.1.png)
+![Task2.2](Evidence_Lab1/Task2.2.png)
 
 ### Step 2.3: Create Personal Admin User
 
@@ -123,7 +123,7 @@ The user `CloudAdmin_dani` was created successfully.
 
 Evidence:
 
-![CloudAdmin user creation](Evidence/2.2-Personal-Admin.png)
+![Task2.3](Evidence_Lab1/Task2.3.png)
 
 ### Step 2.4: Add User to Admins Group and Verify Membership
 
@@ -140,28 +140,9 @@ Verification command:
 aws $EP iam get-group --group-name Admins
 ```
 
-Output summary:
-
-```json
-{
-    "Users": [
-        {
-            "UserName": "CloudAdmin_dani",
-            "Arn": "arn:aws:iam::000000000000:user/CloudAdmin_dani"
-        }
-    ],
-    "Group": {
-        "GroupName": "Admins",
-        "Arn": "arn:aws:iam::000000000000:group/Admins"
-    }
-}
-```
-
-This proves that `CloudAdmin_dani` is a member of the `Admins` group. The admin permission is inherited from the group rather than attached directly to the user.
-
 Evidence:
 
-![Verify Admins membership](Evidence/2.4-Verify-Membership.png)
+![Task2.4](Evidence_Lab1/Task2.4.png)
 
 ## Task 3: Enforce Least Privilege with a Scoped Policy
 
@@ -170,16 +151,16 @@ Evidence:
 Command:
 
 ```bash
-aws $EP iam create-user --user-name Analyst_jiha
+aws $EP iam create-user --user-name Analyst_Akif
 ```
 
 Result:
 
-The user `Analyst_jiha` was created successfully.
+The user `Analyst_Akif` was created successfully.
 
 Evidence:
 
-![Analyst user creation](Evidence/3.1-create-user.png)
+![Task3.1](Evidence_Lab1/Task3.1.png)
 
 ### Step 3.2: Attach S3 Read-Only Policy
 
