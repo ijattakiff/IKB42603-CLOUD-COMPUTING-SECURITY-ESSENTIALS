@@ -167,7 +167,7 @@ Evidence:
 Command:
 
 ```bash
-aws $EP iam attach-user-policy --user-name Analyst_jiha \
+aws $EP iam attach-user-policy --user-name Analyst_Akif \
     --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
 ```
 
@@ -176,7 +176,7 @@ aws $EP iam attach-user-policy --user-name Analyst_jiha \
 Verification command:
 
 ```bash
-aws $EP iam list-attached-user-policies --user-name Analyst_jiha
+aws $EP iam list-attached-user-policies --user-name Analyst_Akif
 ```
 
 Output:
@@ -192,15 +192,15 @@ Output:
 }
 ```
 
-This proves that `Analyst_jiha` only has the `AmazonS3ReadOnlyAccess` policy attached.
+This proves that `Analyst_Akif` only has the `AmazonS3ReadOnlyAccess` policy attached.
 
 Evidence:
 
-![Analyst read-only policy](Evidence/3.3-ListPermission-User.png)
+![Task3.3](Evidence_Lab1/Task3.3.png)
 
 ### Least Privilege Explanation
 
-- If the `Analyst_jiha` account were stolen, the damage would be limited because the account only has read-only S3 permissions. 
+- If the `Analyst_Akif` account were stolen, the damage would be limited because the account only has read-only S3 permissions. 
 - The attacker would not have administrator privileges and should not be able to create users, delete resources, change IAM policies or modify data. 
 - This reduces the blast radius because the compromised identity can only perform the limited actions granted by its scoped policy.
 
@@ -211,16 +211,16 @@ Evidence:
 Command:
 
 ```bash
-aws $EP iam create-access-key --user-name Analyst_jiha
+aws $EP iam create-access-key --user-name Analyst_Akif
 ```
 
 Result:
 
-An access key was created for `Analyst_jiha`.
+An access key was created for `Analyst_Akif`.
 
 Evidence:
 
-![Access key creation](Evidence/4.1-access-key.png)
+![Task4.1](Evidence_Lab1/Task4.1.png)
 
 Security note: the secret access key is not repeated in this report. In real cloud environments, access keys must not be committed to repositories, shared in screenshots or stored in plaintext.
 
@@ -229,7 +229,7 @@ Security note: the secret access key is not repeated in this report. In real clo
 Command:
 
 ```bash
-aws $EP iam list-access-keys --user-name Analyst_jiha
+aws $EP iam list-access-keys --user-name Analyst_Akif
 ```
 
 Output:
@@ -238,7 +238,7 @@ Output:
 {
     "AccessKeyMetadata": [
         {
-            "UserName": "Analyst_jiha",
+            "UserName": "Analyst_Akif",
             "AccessKeyId": "LKIAQAAAAAAANMJV6XA3",
             "Status": "Inactive",
             "CreateDate": "2026-07-29T05:29:06.789002+00:00"
@@ -249,7 +249,7 @@ Output:
 
 Evidence:
 
-![Access key listing](Evidence/4.2-List-access-Keys.png)
+![Task4.2](Evidence_Lab1/Task4.2.png)
 
 ### Step 4.3: Rotate and Deactivate Old Key
 
@@ -263,10 +263,6 @@ aws $EP iam update-access-key --user-name Analyst_jiha \
 Result:
 
 The access key status is now `Inactive`, which demonstrates key rotation/deactivation.
-
-Evidence:
-
-![Access key deactivation command](<Evidence/4-Credential&AccessKeys.png>)
 
 ## Session B: Kubernetes RBAC
 
@@ -286,7 +282,7 @@ The local kind cluster `ccse-lab1` was created and kubectl was configured to use
 
 Evidence:
 
-![Session B cluster setup](Evidence/SessionB-Setup.png)
+![SetupTask B](Evidence_Lab1/Setuptask%20B.png)
 
 ## Task 5: Separate Environments with Namespaces
 
@@ -304,7 +300,7 @@ The namespaces `dev` and `prod` were created and listed as `Active`.
 
 Evidence:
 
-![Namespace creation](Evidence/5-Env-Namespace.png)
+![Task5](Evidence_Lab1/Task5.png)
 
 ## Task 6: Define a Role and Bind It
 
@@ -348,7 +344,7 @@ The RoleBinding `dev-user-binding` binds the `pod-reader` Role to the `dev-user`
 
 Evidence:
 
-![Role and RoleBinding creation](Evidence/6-role-bind.png)
+![Task6](Evidence_Lab1/Task6.png)
 
 ## Task 7: Test Access Control
 
@@ -416,7 +412,7 @@ The service account cannot list pods in `prod` because the Role and RoleBinding 
 
 Evidence:
 
-![RBAC can-i tests](Evidence/7-test.png)
+![Task7](Evidence_Lab1/Task7.png)
 
 ### Authentication vs Authorization
 
@@ -453,7 +449,7 @@ subjects:
 
 Evidence:
 
-![RoleBinding YAML verification](Evidence/Verification-RBAC.png)
+![RBAC Verification](Evidence_Lab1/RBAC%20Verification.png)
 
 This confirms that the `dev-user-binding` RoleBinding connects the `dev-user` service account to the `pod-reader` Role in the `dev` namespace.
 
@@ -461,34 +457,34 @@ This confirms that the `dev-user-binding` RoleBinding connects the `dev-user` se
 
 ### Q1. Why is attaching policies to groups better than attaching them directly to users?
 
-Attaching policies to groups is better because permissions become easier to manage and audit. When many users need the same access, the policy only needs to be attached or changed once at the group level. Every member receives the updated permissions automatically. This reduces mistakes compared to managing permissions separately for each user.
+Keeping track of each user's permissions quickly becomes complicated. Instead, you may adjust permissions in a single location by attaching rules to groups. When someone departs or changes jobs, you just shift them to a different group, and everyone who is joined to the group automatically receives what they need. With access privileges, it saves a lot of time, maintains cleanliness, and avoids careless copy-paste errors.
 
 ### Q2. What is the difference between an IAM User and an IAM Role?
 
-An IAM User is a long-term identity usually used by a person or application and can have long-lived credentials such as passwords or access keys. An IAM Role is an assumable identity that provides temporary credentials. Roles are safer for many workloads because they avoid permanent access keys and can be granted only when needed.
+With long-term credentials like passwords or access keys, an IAM User is a permanent identity that is typically associated with a particular person or application. In contrast, an IAM Role is an identity that any authorised user or service can temporarily "assume" in order to obtain temporary security credentials. Because you aren't leaving long-term access keys out there that could be compromised, roles are far safer.
 
 ### Q3. Explain least privilege using the Analyst account, and how it reduces blast radius if compromised.
 
-The `Analyst_jiha` account demonstrates least privilege because it only has `AmazonS3ReadOnlyAccess`. If the account is compromised, the attacker is limited to read-only S3 access instead of full administrative control. This reduces the blast radius because the attacker cannot use that account to perform high-impact actions such as deleting resources, changing IAM permissions or creating new privileged users.
+Giving someone the bare minimum of access necessary to perform their job is known as "least privilege." Because it only has read-only access to S3 (AmazonS3ReadOnlyAccess), the Analyst_jiha account is an excellent illustration. The "blast radius" (the potential damage) is little if a hacker manages to obtain such credentials because they can only access files. They are unable to alter administrative settings, build up costly instances, or remove buckets.
 
 ### Q4. In Kubernetes, what is the difference between a Role and a RoleBinding?
 
-A Role defines what actions are allowed, such as `get`, `list` and `watch` pods in a namespace. A RoleBinding defines who receives those permissions. In this lab, the `pod-reader` Role defines the pod read permissions, and the `dev-user-binding` RoleBinding grants those permissions to the `dev-user` service account.
+Consider a RoleBinding as the handshake and a Role as the set of rules.
+What can be done, such as reading pods inside a particular namespace, is defined by the role (pod-reader).
+By associating that role with an identity (such as the dev-user service account), the RoleBinding (dev-user-binding) determines who is allowed to accomplish it.
 
 ### Q5. Why did the developer service account fail to access prod, and which security principle does that demonstrate?
 
-The developer service account failed to access `prod` because its Role and RoleBinding were created only in the `dev` namespace. Kubernetes RBAC did not grant that identity permission in `prod`. This demonstrates least privilege and separation of environments because access is limited to the exact namespace and actions required.
+Because there was no Role or RoleBinding configured for it in production, its access privileges were rigidly restricted to the dev namespace, which is why it failed. This illustrates environment isolation and least privilege. A developer shouldn't have access to production just because they need authorisation to experiment in development.
 
 ## Security Best-Practices Checklist
 
-- [x] Root user is not used for daily tasks because a dedicated admin identity, `CloudAdmin_dani`, exists.
+- [x] Root user is not used for daily tasks because a dedicated admin identity, `CloudAdmin_Izzat`, exists.
 - [x] Permissions are granted through the `Admins` group instead of attaching administrator permissions directly to the admin user.
-- [x] A least-privilege read-only identity, `Analyst_jiha`, was created and assigned `AmazonS3ReadOnlyAccess`.
+- [x] A least-privilege read-only identity, `Analyst_Akif`, was created and assigned `AmazonS3ReadOnlyAccess`.
 - [x] Access keys were created, listed and deactivated to demonstrate rotation.
 - [x] Kubernetes RBAC blocked unauthorized actions: deleting pods in `dev` and listing pods in `prod`.
 
 ## Conclusion
 
-This lab successfully demonstrated cloud identity management and least privilege. In LocalStack IAM, administrative permissions were assigned through a group, and a separate Analyst user was restricted to read-only S3 access. Access-key hygiene was demonstrated by listing and deactivating the Analyst access key.
-
-In Kubernetes, RBAC enforced a clear access boundary. The `dev-user` service account could list pods in `dev`, but could not delete pods and could not access pods in `prod`. This proves that authorization was applied according to least privilege and namespace separation.
+Everything went according to plan: the RBAC rules performed as intended and the type cluster remained healthy. Pods could be listed in dev, but they couldn't be deleted or viewed in prod. In essence, authorisation examined the Role and RoleBinding to determine its actual capabilities, whereas authentication demonstrated the identity of the service account. It's a good, practical illustration of least privilege across namespaces.
