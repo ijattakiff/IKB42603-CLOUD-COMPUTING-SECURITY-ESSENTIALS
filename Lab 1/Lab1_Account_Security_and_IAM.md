@@ -91,7 +91,7 @@ The group `Admins` was created successfully.
 
 Evidence:
 
-![Admins group creation](Evidence/2.1-Group-Policy.png)
+![Task2.1](Evidence/Task2.1.png)
 
 ### Step 2.2: Attach Administrator Policy to Group
 
