@@ -26,7 +26,7 @@ cat record.txt
 
 The command created `record.txt` and displayed the sample patient record.
 
-![Task1](Evidence_Lab2/task1a.png)
+![Task1](Evidence_Lab3/task1a.png)
 
 #### Step 2: Encrypt the record with AES-256-CBC
 
@@ -45,7 +45,7 @@ cat record.enc
 
 The terminal displayed binary-looking content instead of the original plaintext, confirming that the file was not human-readable.
 
-![Task1](Evidence_Lab2/task1b.png)
+![Task1](Evidence_Lab3/task1b.png)
 
 #### Step 4: Decrypt and verify the record
 
@@ -56,7 +56,7 @@ diff record.txt record.dec.txt && echo 'MATCH: decryption successful'
 
 **Observed result:** `MATCH: decryption successful`
 
-![Task1](Evidence_Lab2/task1c.png)
+![Task1](Evidence_Lab3/task1c.png)
 
 #### Task 1 report question
 
@@ -76,7 +76,7 @@ openssl pkeyutl -encrypt -pubin -inkey public.pem -in record.txt -out record.rsa
 
 The evidence shows a 2048-bit RSA private key file was created.
 
-![Task2](Evidence_Lab2/task2.png)
+![Task2](Evidence_Lab3/task2.png)
 
 The encrypted RSA output file was created.
 
@@ -95,7 +95,7 @@ openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem \
 
 The evidence shows that `cert.pem` and `key.pem` were created. The private key itself is not reproduced.
 
-![Task3](Evidence_Lab2/task3a.png)
+![Task3](Evidence_Lab3/task3a.png)
 
 #### Step 2: Start the HTTPS service
 
@@ -113,7 +113,7 @@ docker ps --filter name=tls
 
 The container status was `Up`, and port `8443` was mapped to HTTPS port `443`.
 
-![Task3](Evidence_Lab2/task3b.png)
+![Task3](Evidence_Lab3/task3b.png)
 
 #### Step 3: Connect over TLS
 
@@ -127,7 +127,7 @@ curl -k https://localhost:8443/record.txt
 
 **Observed result:** `Patient: alipp, Diagnosis: confidential`
 
-![Task3](Evidence_Lab2/task3c.png)
+![Task3](Evidence_Lab3/task3c.png)
 
 TLS encrypts the traffic between client and server so an on-path observer cannot directly read the record. The `-k` option is acceptable for this local exercise because the certificate is self-signed, but it disables certificate trust validation and must not be normal production practice.
 
@@ -184,7 +184,7 @@ openssl enc -aes-256-cbc -pbkdf2 -in record.txt -out record.env.enc \
 
 The evidence shows that the 32-byte plaintext data key and encrypted record were created.
 
-![Task5](Evidence_Lab2/task5a.png)
+![Task5](Evidence_Lab3/task5a.png)
 
 #### Step 3: Delete plaintext data-key copies
 
@@ -214,7 +214,7 @@ diff record.txt record.env.dec.txt && echo 'MATCH: envelope decryption successfu
 
 **Observed result:** `MATCH: envelope decryption successful`
 
-![Task5](Evidence_Lab2/task5b.png)
+![Task5](Evidence_Lab3/task5b.png)
 
 The temporary recovered plaintext key files were subsequently deleted, as shown in the Task 6 evidence.
 
@@ -226,7 +226,7 @@ The temporary recovered plaintext key files were subsequently deleted, as shown 
 KEY_B=$(aws $EP kms create-key --description 'CCSE tenant-B master key' \
   --query 'KeyMetadata.KeyId' --output text)
 ```
-![Task6](Evidence_Lab2/task6a.png)
+![Task6](Evidence_Lab3/task6a.png)
 
 **Observed status:** A distinct tenant B Key ID was returned. Both tenant Key IDs are `[REDACTED]`. The original screenshot (`2.png`) is not embedded because it displays the complete identifiers.
 
@@ -239,7 +239,7 @@ aws $EP kms decrypt --key-id "$KEY_B" \
 
 **Observed result:** `IncorrectKeyException`. Tenant B’s key could not unwrap a data key protected by tenant A’s key.
 
-![Task6](Evidence_Lab2/task6b.png)
+![Task6](Evidence_Lab3/task6b.png)
 
 #### Step 3: Schedule deletion of tenant A’s key
 
@@ -260,7 +260,7 @@ aws $EP kms describe-key --key-id "$KEY_A" \
 ```
 
 **Observed result:** `Disabled`
-![Task6](Evidence_Lab2/task6c.png)
+![Task6](Evidence_Lab3/task6c.png)
 
 #### Step 5: Attempt to unwrap the data key after erasure
 
@@ -291,7 +291,7 @@ da6d4a08d1e1fa61be8cde7f57e1646f216bb29332acda7392687acf8c00e8b3  tampered.txt
 
 The hashes differ, showing that even a small content change is detectable.
 
-![Task7](Evidence_Lab2/task7a.png)
+![Task7](Evidence_Lab3/task7a.png)
 
 #### Step 2: Build a hash chain
 
@@ -311,7 +311,7 @@ file read  | 6c3adc61ece69412b338e43d761435e95dbfc948253f8f600087b0a4c5ad2d3d
 export data| e1470ccfaf43dcab3c17d5710dc9eacbb7ac65c9f522ca98c2c503431b32da68
 ```
 
-![Task7](Evidence_Lab2/task7c.png)
+![Task7](Evidence_Lab3/task7c.png)
 
 ## 4. Short-Answer Questions
 
