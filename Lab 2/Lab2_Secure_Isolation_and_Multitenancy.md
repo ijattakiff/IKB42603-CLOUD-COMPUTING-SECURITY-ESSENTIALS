@@ -3,9 +3,9 @@
 **Course:** IKB42603 Cloud Computing Security Essentials  
 **Lab:** Weeks 3–4 — Secure Isolation & Multi-Tenancy  
 **Environment:** Docker, kind, Kubernetes, kubectl, Calico  
-**Evidence date:** 8 August 2026
-
-> **Redaction notice:** No real passwords, API keys, access tokens, or private keys appear in the supplied evidence. Sample Kubernetes secret values and sample sensitive-record strings have been masked in the report evidence and are represented as `[REDACTED]` in command examples. The original screenshots remain unchanged in the workspace.
+**Name:** Muhamad Izzat A'kif Bin Mohd Sanusi
+**ID:** 52215124688
+**Evidence date:** 29 August 2026
 
 ## Objectives
 
@@ -32,13 +32,12 @@ networking:
 
 The terminal reported that the cluster `ccse-lab2` was created and the kubectl context was set to `kind-ccse-lab2`.
 
-![Cluster creation evidence](lab-images/lab2/SETUP%201.png)
 
 ### Step 2: Install and verify Calico
 
 Calico v3.27.0 was applied. Its resources were created, and the `calico-node` daemon set successfully rolled out. `kubectl get nodes` showed the control-plane node in `Ready` state.
 
-![Calico installation and ready node](lab-images/lab2/SETUP%201.2.png)
+![Setup](Evidence_Lab2/setup.png)
 
 **Result:** The Kubernetes environment was ready with a CNI capable of enforcing network policies.
 
@@ -63,7 +62,7 @@ kubectl get pods,svc -n tenant-a
 kubectl get pods,svc -n tenant-b
 ```
 
-![Tenant namespaces, deployments, pods, and services](lab-images/lab2/TASK%201.png)
+![Setup](Evidence_Lab2/task1.png)
 
 **Observation:** Each tenant had its own running pod and service. Both tenants shared the same Kubernetes cluster but were logically organized into different namespaces.
 
@@ -83,7 +82,7 @@ kubectl -n tenant-a run probe --rm -it --image=curlimages/curl --restart=Never -
   curl -s -m 5 "http://${B_IP}" -o /dev/null -w 'HTTP %{http_code}\n'
 ```
 
-![Cross-tenant HTTP 200 before policy](lab-images/lab2/TASK%202.png)
+![Setup](Evidence_Lab2/task2.png)
 
 **Observed result:** `HTTP 200` was returned. The repeated `HTTP 200` in the evidence came from fallback log streaming after kubectl could not attach to the short-lived container; it represents the same successful probe, not a separate security test.
 
@@ -114,7 +113,7 @@ The quota was then inspected using:
 kubectl describe resourcequota tenant-a-quota -n tenant-a
 ```
 
-![Tenant A resource quota](lab-images/lab2/TASK%203.png)
+![Setup](Evidence_Lab2/task3.png)
 
 **Observed result:** The quota limited Tenant A to five pods, one CPU of requested capacity, and 512 MiB of requested memory. At verification time, one pod was counted; CPU and memory requests showed zero because the deployed pod did not declare resource requests.
 
@@ -141,11 +140,9 @@ spec:
     - Ingress
 ```
 
-![Default-deny policy creation](lab-images/lab2/TASK%204.png)
+![Setup](Evidence_Lab2/task4.png)
 
 The first attempt to retrieve logs failed because the original `--rm` probe from Task 2 had already been deleted. A persistent test pod was therefore created and its output inspected.
-
-![Post-policy probe showing HTTP 000](lab-images/lab2/TASK%204.1.png)
 
 **Observed result:** The post-policy probe returned `HTTP 000`, and the pod ended in `Error`. For curl, code `000` means that no HTTP response was received; together with the five-second timeout and the before-policy `HTTP 200`, this is evidence that the request was blocked.
 
@@ -176,7 +173,7 @@ kubectl auth can-i get secrets -n tenant-a --as="$SA"
 kubectl auth can-i get secrets -n tenant-b --as="$SA"
 ```
 
-![RBAC secret isolation with sample values redacted](lab-images/lab2/TASK%205%20-%20REDACTED.png)
+![Setup](Evidence_Lab2/task5.png)
 
 **Observed result:** The authorization result was `yes` for Tenant A and `no` for Tenant B.
 
@@ -206,7 +203,7 @@ docker run --rm -v ccse-vol:/data alpine sh -c \
    rm /data/phi2.txt; echo wiped'
 ```
 
-![Deletion and overwrite evidence with sample data redacted](lab-images/lab2/TASK%206%20-%20REDACTED.png)
+![Setup](Evidence_Lab2/task6.png)
 
 **Security interpretation:** An ordinary delete removes the filesystem reference but may leave recoverable bytes in underlying storage. The visible-file `grep` used here cannot inspect unallocated blocks, so the absence of a match does not prove that remanent data was absent. Overwriting before deletion is stronger on simple local media, but copy-on-write filesystems, snapshots, SSD wear levelling, replicas, and provider-managed storage may retain other copies. Cloud systems therefore prefer cryptographic erasure: encrypt the data and securely destroy the encryption key.
 
@@ -219,7 +216,7 @@ kubectl get networkpolicy -A
 kubectl describe resourcequota tenant-a-quota -n tenant-a
 ```
 
-![Final policy and quota verification](lab-images/lab2/LAST.png)
+![Setup](Evidence_Lab2/question3.png)
 
 **Verified state:** `tenant-b` contained `default-deny-ingress`. The `tenant-a-quota` limits remained five pods, one requested CPU, and 512 MiB requested memory.
 
@@ -227,19 +224,31 @@ kubectl describe resourcequota tenant-a-quota -n tenant-a
 
 ### Q1. Why can containers in different namespaces reach each other by default, and why is that dangerous in a multi-tenant cloud?
 
-Kubernetes normally gives pods routable cluster-network addresses and does not treat namespaces as network firewalls. Unless a NetworkPolicy enforced by the CNI selects a pod, traffic is allowed. In a multi-tenant environment, a compromised or malicious tenant could scan services, exploit exposed applications, access unintended internal endpoints, or move laterally into another tenant's workload. The Task 2 `HTTP 200` demonstrated this risk directly.
+Why it happens: Kubernetes namespaces provide logical separation for object naming and RBAC scoping, but by default, the Kubernetes flat network model allows unhindered Pod-to-Pod IP connectivity across all namespaces.
+
+Why it is dangerous: In a multi-tenant environment sharing the same cluster infrastructure, an attacker who compromises a single container in tenant-a can freely probe, map, and exploit internal APIs, services, or unauthenticated endpoints belonging to tenant-b (lateral movement).
 
 ### Q2. Explain the default-deny principle and how the NetworkPolicy implements it.
 
-Default-deny means traffic is rejected unless an explicit rule permits it. The Task 4 policy uses an empty `podSelector`, so it selects every pod in `tenant-b`; it declares `Ingress` as the controlled direction and supplies no ingress rules. Calico therefore denies all incoming connections to those pods. Required same-tenant or application flows should subsequently be permitted with narrowly scoped allow policies.
+Default-Deny Principle: A security baseline stating that all traffic, connections, or actions are implicitly blocked unless an explicit rule specifically permits them (zero-trust approach).
+
+Implementation: The NetworkPolicy targets all pods within the namespace (podSelector: {}) and declares ingress in its policyTypes without defining any allowing rules under ingress. This drops all incoming network traffic from other namespaces or outside sources by default.
 
 ### Q3. How do virtual machines and containers differ in isolation strength? When would you add a VM boundary?
 
-Containers isolate processes with operating-system features such as namespaces and cgroups but share the host kernel. A kernel vulnerability or unsafe privileged configuration can therefore weaken separation. Virtual machines run separate guest kernels behind a hypervisor, providing a stronger fault and security boundary at the cost of more memory, startup time, and management overhead. A VM boundary should be added for mutually untrusted tenants, regulated or highly sensitive workloads, risky code execution, kernel-dependent workloads, or whenever the threat model requires stronger isolation than a shared kernel can provide.
+Isolation Difference:
+
+Containers share the host system's OS kernel and use kernel features (namespaces, cgroups) for logical boundaries. A kernel vulnerability (privilege escalation/container escape) can compromise the host and all adjacent containers.
+
+Virtual Machines (VMs) run independent operating systems on virtualized hardware managed by a hypervisor (Hardware-assisted isolation), providing a much stronger security boundary.
+
+When to add a VM boundary: You should introduce a VM boundary when running untrusted user code, multi-tenant workloads with strict regulatory compliance constraints (e.g., PCI-DSS, HIPAA), or untrusted third-party applications where kernel-level isolation is insufficient.
 
 ### Q4. What is data remanence, and why is cryptographic erasure the preferred cloud solution?
 
-Data remanence is residual data that remains recoverable after normal deletion, reallocation, or deprovisioning. Cloud customers usually cannot locate or overwrite every physical copy because providers use abstraction, replication, snapshots, backups, SSDs, and copy-on-write storage. With properly encrypted data, securely destroying all copies of the encryption key makes the remaining ciphertext computationally unusable without needing direct access to every physical block.
+Data Remanence: The residual representation of sensitive data that remains on physical storage media even after standard deletion commands (rm, format) have been executed.
+
+Why Cryptographic Erasure is Preferred in Cloud: In public cloud environments, tenants do not have direct physical access to underlying storage drives to perform bit-level overwriting (like dd or physical destruction), and cloud storage relies on dynamic block abstraction/wear-leveling. Cryptographic erasure encrypts data by default and securely destroys the decryption keys, rendering the residual ciphertext permanently unreadable without needing physical drive access.
 
 ### Q5. Which isolation dimension did each task exercise?
 
@@ -271,6 +280,7 @@ After preserving the required evidence, the lab environment can be removed with:
 kind delete cluster --name ccse-lab2
 docker volume rm ccse-vol
 ```
+![Setup](Evidence_Lab2/cleanup.png)
 
 Cleanup was not evidenced and is therefore not claimed as completed in this report.
 
