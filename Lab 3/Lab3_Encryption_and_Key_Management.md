@@ -2,12 +2,10 @@
 
 ## Lab 3: Encryption and Key Management
 
-**Student:** Muhammad Aliff Bin Mazlan  
-**Student ID:** 52215124172  
-**Date:** 17 August 2026  
+**Student:** Muhamad Izzat A'kif Bin Mohd Sanusi
+**Student ID:** 52215124688  
+**Date:** 29 August 2026  
 **Environment:** Kali Linux, OpenSSL, Docker, AWS CLI v2, LocalStack KMS
-
-> **Credential and secret redaction notice:** Passphrases, plaintext data keys, wrapped data-key values, ciphertext blobs, complete KMS Key IDs, ARNs, and other secret-bearing values are not reproduced in this report. They are shown as `[REDACTED]`. The original evidence files remain unchanged.
 
 ## 1. Objectives
 
