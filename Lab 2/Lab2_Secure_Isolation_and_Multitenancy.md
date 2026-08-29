@@ -32,7 +32,7 @@ networking:
 
 The terminal reported that the cluster `ccse-lab2` was created and the kubectl context was set to `kind-ccse-lab2`.
 
-![Setup](lab2/Evidence_Lab2/Setup%201.png)
+![Setup](Evidence_Lab2/setup.png)
 
 ### Step 2: Install and verify Calico
 
