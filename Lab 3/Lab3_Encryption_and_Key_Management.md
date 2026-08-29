@@ -26,7 +26,7 @@ cat record.txt
 
 The command created `record.txt` and displayed the sample patient record.
 
-![Task 1 - sensitive record created](lab-images/lab3/z1.png)
+![Task1](Evidence_Lab2/task1a.png)
 
 #### Step 2: Encrypt the record with AES-256-CBC
 
@@ -36,7 +36,6 @@ openssl enc -aes-256-cbc -pbkdf2 -salt -in record.txt -out record.enc
 
 OpenSSL requested and confirmed a passphrase. The passphrase is not displayed or stored in this report.
 
-![Task 1 - AES encryption](lab-images/lab3/z2.png)
 
 #### Step 3: Demonstrate that the encrypted file is unreadable
 
@@ -46,7 +45,7 @@ cat record.enc
 
 The terminal displayed binary-looking content instead of the original plaintext, confirming that the file was not human-readable.
 
-![Task 1 - unreadable ciphertext](lab-images/lab3/z3.png)
+![Task1](Evidence_Lab2/task1b.png)
 
 #### Step 4: Decrypt and verify the record
 
@@ -57,7 +56,7 @@ diff record.txt record.dec.txt && echo 'MATCH: decryption successful'
 
 **Observed result:** `MATCH: decryption successful`
 
-![Task 1 - successful decryption comparison](lab-images/lab3/z4.png)
+![Task1](Evidence_Lab2/task1c.png)
 
 #### Task 1 report question
 
@@ -65,66 +64,23 @@ The key-distribution problem is that every authorized sender and receiver must o
 
 ### Task 2 — Asymmetric Encryption and Digital Signatures
 
-#### Step 1: Generate the RSA private key
-
 ```bash
 openssl genrsa -out private.pem 2048
 ```
-
-The evidence shows a 2048-bit RSA private key file was created.
-
-![Task 2 - RSA private key generated](lab-images/lab3/z5.png)
-
-#### Step 2: Derive the public key
-
 ```bash
 openssl rsa -in private.pem -pubout -out public.pem
 ```
-
-The public key was successfully written to `public.pem`.
-
-![Task 2 - public key generated](lab-images/lab3/z6.png)
-
-#### Step 3: Encrypt with the public key
-
 ```bash
 openssl pkeyutl -encrypt -pubin -inkey public.pem -in record.txt -out record.rsa
 ```
 
+The evidence shows a 2048-bit RSA private key file was created.
+
+![Task2](Evidence_Lab2/task2.png)
+
 The encrypted RSA output file was created.
 
-![Task 2 - RSA public-key encryption](lab-images/lab3/z7.png)
-
-#### Step 4: Decrypt with the private key and compare
-
-```bash
-openssl pkeyutl -decrypt -inkey private.pem -in record.rsa -out record.rsa.txt
-diff record.txt record.rsa.txt && echo 'MATCH: RSA decryption successful'
-```
-
-**Observed result:** `MATCH: RSA decryption successful`
-
-![Task 2 - RSA private-key decryption](lab-images/lab3/z8.png)
-
-#### Step 5: Sign the record
-
-```bash
-openssl dgst -sha256 -sign private.pem -out record.sig record.txt
-```
-
-The evidence shows that `record.sig` was created.
-
-![Task 2 - digital signature created](lab-images/lab3/z9.png)
-
-#### Step 6: Verify the signature
-
-```bash
-openssl dgst -sha256 -verify public.pem -signature record.sig record.txt
-```
-
 **Observed result:** `Verified OK`
-
-![Task 2 - signature verified](lab-images/lab3/z11.png)
 
 The public key is used to encrypt data for the private-key owner, while the private key is used to decrypt it. For signatures, the private key signs and the public key verifies. The verified signature demonstrates origin authentication and integrity, assuming the private key remained under the signer’s control.
 
@@ -139,7 +95,7 @@ openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem \
 
 The evidence shows that `cert.pem` and `key.pem` were created. The private key itself is not reproduced.
 
-![Task 3 - certificate and TLS key generated](lab-images/lab3/z10.png)
+![Task3](Evidence_Lab2/task3a.png)
 
 #### Step 2: Start the HTTPS service
 
@@ -157,7 +113,7 @@ docker ps --filter name=tls
 
 The container status was `Up`, and port `8443` was mapped to HTTPS port `443`.
 
-![Task 3 - TLS container running](lab-images/lab3/z12.png)
+![Task3](Evidence_Lab2/task3b.png)
 
 #### Step 3: Connect over TLS
 
@@ -171,7 +127,7 @@ curl -k https://localhost:8443/record.txt
 
 **Observed result:** `Patient: alipp, Diagnosis: confidential`
 
-![Task 3 - successful HTTPS request over TLS](lab-images/lab3/aaa.png)
+![Task3](Evidence_Lab2/task3c.png)
 
 TLS encrypts the traffic between client and server so an on-path observer cannot directly read the record. The `-k` option is acceptable for this local exercise because the certificate is self-signed, but it disables certificate trust validation and must not be normal production practice.
 
@@ -228,7 +184,7 @@ openssl enc -aes-256-cbc -pbkdf2 -in record.txt -out record.env.enc \
 
 The evidence shows that the 32-byte plaintext data key and encrypted record were created.
 
-![Task 5 - local envelope encryption](lab-images/lab3/z15.png)
+![Task5](Evidence_Lab2/task5a.png)
 
 #### Step 3: Delete plaintext data-key copies
 
@@ -241,8 +197,6 @@ ls -l datakey.enc record.env.enc
 ```
 
 **Observed result:** `Plaintext data key deleted`. Only the wrapped key and encrypted data remained.
-
-![Task 5 - plaintext data key removed](lab-images/lab3/z16.png)
 
 #### Additional validation: unwrap and decrypt before erasure
 
@@ -260,7 +214,7 @@ diff record.txt record.env.dec.txt && echo 'MATCH: envelope decryption successfu
 
 **Observed result:** `MATCH: envelope decryption successful`
 
-![Task 5 - successful envelope decryption](lab-images/lab3/34.png)
+![Task5](Evidence_Lab2/task5b.png)
 
 The temporary recovered plaintext key files were subsequently deleted, as shown in the Task 6 evidence.
 
@@ -272,6 +226,7 @@ The temporary recovered plaintext key files were subsequently deleted, as shown 
 KEY_B=$(aws $EP kms create-key --description 'CCSE tenant-B master key' \
   --query 'KeyMetadata.KeyId' --output text)
 ```
+![Task6](Evidence_Lab2/task6a.png)
 
 **Observed status:** A distinct tenant B Key ID was returned. Both tenant Key IDs are `[REDACTED]`. The original screenshot (`2.png`) is not embedded because it displays the complete identifiers.
 
@@ -284,7 +239,7 @@ aws $EP kms decrypt --key-id "$KEY_B" \
 
 **Observed result:** `IncorrectKeyException`. Tenant B’s key could not unwrap a data key protected by tenant A’s key.
 
-![Task 6 - cross-tenant decryption rejected](lab-images/lab3/3.png)
+![Task6](Evidence_Lab2/task6b.png)
 
 #### Step 3: Schedule deletion of tenant A’s key
 
@@ -305,6 +260,7 @@ aws $EP kms describe-key --key-id "$KEY_A" \
 ```
 
 **Observed result:** `Disabled`
+![Task6](Evidence_Lab2/task6c.png)
 
 #### Step 5: Attempt to unwrap the data key after erasure
 
@@ -335,7 +291,7 @@ da6d4a08d1e1fa61be8cde7f57e1646f216bb29332acda7392687acf8c00e8b3  tampered.txt
 
 The hashes differ, showing that even a small content change is detectable.
 
-![Task 7 - differing SHA-256 hashes](lab-images/lab3/44.png)
+![Task7](Evidence_Lab2/task7a.png)
 
 #### Step 2: Build a hash chain
 
@@ -355,29 +311,29 @@ file read  | 6c3adc61ece69412b338e43d761435e95dbfc948253f8f600087b0a4c5ad2d3d
 export data| e1470ccfaf43dcab3c17d5710dc9eacbb7ac65c9f522ca98c2c503431b32da68
 ```
 
-![Task 7 - tamper-evident hash chain](lab-images/lab3/55.png)
+![Task7](Evidence_Lab2/task7c.png)
 
 ## 4. Short-Answer Questions
 
 ### Q1. Compare symmetric and asymmetric encryption: speed, key distribution, and typical use.
 
-Symmetric encryption uses one shared secret for encryption and decryption. It is fast and efficient for large files, disks, databases, and network-session data, but securely distributing the shared key is difficult. Asymmetric encryption uses a public/private key pair. It is slower and has data-size limitations, but the public key can be widely distributed without revealing the private key. It is typically used for identity, digital signatures, secure key exchange, and encrypting small secrets or symmetric data keys. Practical systems such as TLS combine both: asymmetric cryptography authenticates or establishes a session key, and symmetric cryptography protects the bulk traffic.
+EncryptionSpeed: Extremely fast with low computational overhead (e.g., AES).Key Distribution: Difficult; both parties must securely exchange the same secret key beforehand.Typical Use: Encrypting bulk data at rest (hard drives, databases) or data in transit (TLS payload).Asymmetric EncryptionSpeed: Slower and computationally expensive due to complex mathematical operations (e.g., RSA, ECC).Key Distribution: Simple; uses a public key for encryption (shared freely) and a private key for decryption (kept secret).Typical Use: Key exchange protocols (TLS handshakes), digital signatures, and identity authentication.
 
 ### Q2. Why is key management described as the weakest link, not the algorithm?
 
-Modern algorithms such as AES-256 and correctly sized RSA are computationally strong when used properly. Failures more commonly occur because keys are exposed in source code or logs, copied insecurely, granted to excessive identities, never rotated, poorly backed up, or not revoked after compromise. If an attacker obtains the key, the strength of the algorithm no longer protects the data. Secure generation, storage, access control, auditing, rotation, recovery, and destruction are therefore the decisive controls.
+Modern cryptographic algorithms (like AES-256) are mathematically sound and practically immune to brute-force attacks. However, the system fails if the keys are poorly managed:Keys stored in plaintext, hardcoded in source code, or exposed via misconfigured permissions invite unauthorized access regardless of algorithm strength.Poor key generation (weak randomness), improper key rotation, or unsafe transmission channels allow attackers to steal keys easily, bypassing the mathematical security of the algorithm entirely.
 
 ### Q3. Explain envelope encryption and why only the master key needs hardware-grade protection.
 
-Envelope encryption uses a randomly generated data-encryption key (DEK) to encrypt the actual data locally. KMS then encrypts, or wraps, that DEK using a master key/key-encryption key (KEK). The application stores the ciphertext together with only the wrapped DEK. To decrypt, it asks KMS to unwrap the DEK, uses the plaintext DEK briefly, and removes it from memory or disk. The master key never needs to leave KMS or an HSM. Hardware-grade protection is concentrated on this small master key because the bulk data and many DEKs can remain outside the HSM in encrypted form, making the design scalable and economical.
+Envelope Encryption Mechanism: Data is encrypted locally using a fast, temporary Data Encryption Key (DEK). The DEK itself is then encrypted using a Key Encryption Key (KEK / Master Key) provided by a Key Management Service (KMS). The encrypted DEK is stored alongside the encrypted data.Hardware-Grade Protection: Only the Master Key requires expensive hardware-grade protection (like a Hardware Security Module or HSM) because:The Master Key never leaves the secure boundary of the HSM/KMS.Offloading bulk data encryption to local DEKs avoids performance bottlenecks at the HSM.Protecting one Master Key effectively secures thousands of DEKs and their associated datasets.
 
 ### Q4. How does cryptographic erasure achieve provable deletion where overwriting cannot in the cloud?
 
-Cloud data can have replicas, snapshots, backups, remapped storage blocks, and provider-managed copies, so a tenant often cannot verify that every physical copy was overwritten. With cryptographic erasure, all copies remain encrypted and the controlling key is securely destroyed. Without that key, the ciphertext is computationally unrecoverable even if copies remain. Per-tenant or per-object keys narrow the deletion scope and allow deletion to be demonstrated through key state and audit records. Disabling a key is reversible; final key destruction is what makes deletion permanent.
+Limitations of Cloud Overwriting: Physical disks in multi-tenant cloud environments are abstracted behind virtualization layers, storage area networks (SANs), and automatic redundancy/backup snapshots. Users cannot guarantee that physical bits are directly overwritten.Cryptographic Erasure Approach: Data is stored in an encrypted state. To achieve provable deletion, the single Master Key (or DEK) used to encrypt the data is destroyed (e.g., using schedule-key-deletion or deleting the key from the KMS/HSM).Provable Outcome: Without the key, the stored ciphertext becomes mathematically impossible to decrypt, turning it into unrecoverable garbage instantly across all storage locations, backups, and replicas simultaneously.
 
 ### Q5. How does a hash chain make a log tamper-evident?
 
-Each log entry’s hash includes the previous entry’s hash and the current entry’s data. Changing, removing, inserting, or reordering an earlier event changes its hash and therefore invalidates every later link. A verifier recomputes the sequence and compares the final trusted checkpoint. A hash chain is tamper-evident, not automatically tamper-proof: an attacker who can rewrite the entire log could recompute the chain. The latest hash should therefore be signed, timestamped, or stored in a separate protected system.
+A hash chain links log entries sequentially using cryptographic hash functions:Mechanism: Each log entry includes the cryptographic hash of the previous entry alongside its own data:$$\text{Hash}_n = H(\text{Data}_n \mathbin{\Vert} \text{Hash}_{n-1})$$Tamper-Evident Detection: If an attacker modifies, inserts, or deletes an older log entry ($\text{Data}_{k}$), the hash of that entry changes. This breaks the link for every subsequent hash in the chain ($\text{Hash}_{k+1}, \text{Hash}_{k+2}, \dots$).Integrity Verification: Recomputing the chain easily reveals any mismatch between calculated and stored hashes, making any unauthorized modification immediately 
 
 ## 5. Verification Commands
 
