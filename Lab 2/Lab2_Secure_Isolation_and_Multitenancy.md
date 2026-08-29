@@ -62,7 +62,7 @@ kubectl get pods,svc -n tenant-a
 kubectl get pods,svc -n tenant-b
 ```
 
-![Setup](Evidence_Lab2/task1.png)
+![Task1](Evidence_Lab2/task1.png)
 
 **Observation:** Each tenant had its own running pod and service. Both tenants shared the same Kubernetes cluster but were logically organized into different namespaces.
 
@@ -82,7 +82,7 @@ kubectl -n tenant-a run probe --rm -it --image=curlimages/curl --restart=Never -
   curl -s -m 5 "http://${B_IP}" -o /dev/null -w 'HTTP %{http_code}\n'
 ```
 
-![Setup](Evidence_Lab2/task2.png)
+![TAsk2](Evidence_Lab2/task2.png)
 
 **Observed result:** `HTTP 200` was returned. The repeated `HTTP 200` in the evidence came from fallback log streaming after kubectl could not attach to the short-lived container; it represents the same successful probe, not a separate security test.
 
@@ -113,7 +113,7 @@ The quota was then inspected using:
 kubectl describe resourcequota tenant-a-quota -n tenant-a
 ```
 
-![Setup](Evidence_Lab2/task3.png)
+![Task3](Evidence_Lab2/task3.png)
 
 **Observed result:** The quota limited Tenant A to five pods, one CPU of requested capacity, and 512 MiB of requested memory. At verification time, one pod was counted; CPU and memory requests showed zero because the deployed pod did not declare resource requests.
 
@@ -140,7 +140,7 @@ spec:
     - Ingress
 ```
 
-![Setup](Evidence_Lab2/task4.png)
+![Task4](Evidence_Lab2/task4.png)
 
 The first attempt to retrieve logs failed because the original `--rm` probe from Task 2 had already been deleted. A persistent test pod was therefore created and its output inspected.
 
@@ -173,7 +173,7 @@ kubectl auth can-i get secrets -n tenant-a --as="$SA"
 kubectl auth can-i get secrets -n tenant-b --as="$SA"
 ```
 
-![Setup](Evidence_Lab2/task5.png)
+![Task5](Evidence_Lab2/task5.png)
 
 **Observed result:** The authorization result was `yes` for Tenant A and `no` for Tenant B.
 
@@ -203,7 +203,7 @@ docker run --rm -v ccse-vol:/data alpine sh -c \
    rm /data/phi2.txt; echo wiped'
 ```
 
-![Setup](Evidence_Lab2/task6.png)
+![Task6](Evidence_Lab2/task6.png)
 
 **Security interpretation:** An ordinary delete removes the filesystem reference but may leave recoverable bytes in underlying storage. The visible-file `grep` used here cannot inspect unallocated blocks, so the absence of a match does not prove that remanent data was absent. Overwriting before deletion is stronger on simple local media, but copy-on-write filesystems, snapshots, SSD wear levelling, replicas, and provider-managed storage may retain other copies. Cloud systems therefore prefer cryptographic erasure: encrypt the data and securely destroy the encryption key.
 
@@ -216,7 +216,7 @@ kubectl get networkpolicy -A
 kubectl describe resourcequota tenant-a-quota -n tenant-a
 ```
 
-![Setup](Evidence_Lab2/question3.png)
+![Question3](Evidence_Lab2/question3.png)
 
 **Verified state:** `tenant-b` contained `default-deny-ingress`. The `tenant-a-quota` limits remained five pods, one requested CPU, and 512 MiB requested memory.
 
@@ -280,7 +280,7 @@ After preserving the required evidence, the lab environment can be removed with:
 kind delete cluster --name ccse-lab2
 docker volume rm ccse-vol
 ```
-![Setup](Evidence_Lab2/cleanup.png)
+![Cleanup](Evidence_Lab2/cleanup.png)
 
 Cleanup was not evidenced and is therefore not claimed as completed in this report.
 
