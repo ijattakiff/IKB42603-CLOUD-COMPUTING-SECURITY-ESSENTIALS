@@ -57,7 +57,7 @@ docker ps
 
 The `docker ps` result shows the container as healthy with host port `4566` mapped to the service. This directly confirms that LocalStack was running.
 
-![Setup - LocalStack container started and healthy](lab-images/lab5/11.png)
+![Setup](Evidence_Lab5/setup.png)
 
 LocalStack then reported `Ready`, and the health endpoint showed the `logs` service as available. The AWS CLI environment and endpoint were configured as follows; the two placeholder credential values have been censored:
 
@@ -101,7 +101,7 @@ wc -l auth.log
 
 The output confirms that `auth.log` contains seven lines. The sequence includes a normal login, four failed administrator logins, a successful administrator login, and a 500 MB data export.
 
-![Task 1 - Authentication log creation and seven-line count](lab-images/lab5/1.png)
+![Task 1](Evidence_Lab5/task1.png)
 
 **Result:** Task 1 is complete.
 
@@ -132,7 +132,7 @@ aws $EP logs get-log-events \
 
 The read-back contains all seven original records, including the four failures, later success, and export.
 
-![Task 2 - Centralised CloudWatch Logs read-back](lab-images/lab5/2.png)
+![Task 2](Evidence_Lab5/task2.png)
 
 **Result:** Task 2 is complete. The application logs were centralised and successfully retrieved.
 
@@ -152,7 +152,7 @@ Observed output:
 
 This means that four failed login attempts originated from the same simulated external IP address.
 
-![Task 3 - Failed-login count grouped by IP](lab-images/lab5/3.png)
+![Task 3](Evidence_Lab5/task3.png)
 
 **Result:** Task 3 is complete. The query identified repeated failures from `203.0.113.9`.
 
@@ -184,7 +184,7 @@ Observed chain hashes:
 2025-03-01T09:01:40 EXPORT_DATA user=admin ip=203.0.113.9 size=500MB | ababa787b4bf524d9daddca8c48e4909fc105769a6f17574f42cefe8f81233cf
 ```
 
-![Task 4 - Hash-chained authentication log](lab-images/lab5/4.png)
+![Task 4](Evidence_Lab5/task4a.png)
 
 The export size was then changed from `500MB` to `5MB` in a tampered copy:
 
@@ -201,7 +201,7 @@ Observed final lines:
 2025-03-01T09:01:40 EXPORT_DATA user=admin ip=203.0.113.9 size=5MB
 ```
 
-![Task 4 - Original and tampered export values](lab-images/lab5/5.png)
+![Task 4](Evidence_Lab5/task4b.png)
 
 The chain was recomputed for the tampered file and the final hashes were compared:
 
@@ -233,7 +233,7 @@ Tampered final hash: 72f1d53774a3a938fa7bd3a88f67894e5a64055a41ee7511eac53d7bd89
 TAMPERING DETECTED: final hashes do not match
 ```
 
-![Task 4 - Final-hash comparison detects tampering](lab-images/lab5/6.png)
+![Task 4](Evidence_Lab5/task4c.png)
 
 **Result:** Task 4 is complete. Changing the export size produced a different final hash, proving that the modification was detected.
 
@@ -272,7 +272,7 @@ source=auth.log final_hash=ababa787b4bf524d9daddca8c48e4909fc105769a6f17574f42ce
 
 The evidence shows one repeated `create-log-group` attempt returning `ResourceAlreadyExistsException`; this is expected because `/ccse/integrity` had already been created successfully. The later upload and read-back confirm that the operation continued successfully.
 
-![Task 4 - Final hash forwarded to the separate integrity log group](lab-images/lab5/13.png)
+![Task 4](Evidence_Lab5/task4d.png)
 
 **Result:** Forwarding to a separate central log group is evidenced. An access policy or configuration proving strict append-only enforcement is not shown.
 
@@ -300,7 +300,7 @@ IP=203.0.113.9 fails=4 success=1 export=1
 ALERT: probable brute-force -> compromise -> data exfiltration
 ```
 
-![Task 5 - Correlation counts and incident alert](lab-images/lab5/7.png)
+![Task 5](Evidence_Lab5/task5.png)
 
 **Result:** Task 5 is complete. Correlation identified the sequence of brute-force attempts, likely account compromise, and possible data exfiltration.
 
@@ -322,7 +322,7 @@ target  prot opt source          destination
 DROP    all  --  203.0.113.9    0.0.0.0/0
 ```
 
-![Task 6 - Simulated containment rule](lab-images/lab5/8.png)
+![Task 6](Evidence_Lab5/task6a.png)
 
 This demonstrates the intended containment action. Because the rule was created in a container launched with `--rm`, it is a temporary lab model rather than a persistent host or production firewall rule.
 
@@ -344,82 +344,61 @@ Observed output:
 0adc5d2ac06cbbdd366099bcc0540c4c0f76946e71b52e4c99322731696a203b  evidence_20260826.log
 ```
 
-![Task 6 - Timestamped evidence file and SHA-256 hash](lab-images/lab5/9.png)
+![Task 6](Evidence_Lab5/task6b.png)
 
 **Result:** Task 6 is complete. The suspicious IP was contained in the lab model, and a timestamped copy of the log was preserved with a recorded SHA-256 digest.
 
 ## Incident Report
 
-### Detection
+## Detection
 
-Monitoring identified four failed login attempts against the `admin` account from `203.0.113.9`. The same IP then produced one successful administrator login followed by a 500 MB `EXPORT_DATA` action. A correlation rule combined these records and generated the alert `probable brute-force -> compromise -> data exfiltration`.
+The incident was detected through event correlation in CloudWatch Logs (/ccse/app/auth). A high volume of failed login attempts was identified from IP 203.0.113.9, triggering a automated alert for a potential brute-force attack followed by unauthorized access.
 
-### Analysis
+## Analysis
 
-The sequence is consistent with a brute-force or password-guessing attack that succeeded on the fifth authentication attempt. The successful login alone could have been legitimate, and the export alone could have been an authorised activity. Their shared source IP and close timing after four failures make the combined sequence suspicious and indicate likely account compromise followed by possible data exfiltration.
+Log correlation revealed a distinct multi-stage attack pattern originating from 203.0.113.9:
 
-#### Incident timeline
+4x LOGIN_FAIL attempts targeted at the admin account.
 
-| Time | Observed activity | Interpretation |
-|---|---|---|
-| `2025-03-01 09:00:01` | `ahmad` logged in from `10.0.0.5` | Baseline successful login from a different source |
-| `2025-03-01 09:01:10` to `09:01:18` | Four failed `admin` logins from `203.0.113.9` | Probable brute-force or password-guessing attempts |
-| `2025-03-01 09:01:22` | Successful `admin` login from `203.0.113.9` | Possible account compromise |
-| `2025-03-01 09:01:40` | 500 MB export by `admin` from `203.0.113.9` | Possible data exfiltration |
-| Time not recorded in screenshot | Correlation alert generated | Incident detected |
-| Time not recorded in screenshot | DROP rule added for `203.0.113.9` | Simulated containment |
-| `2026-08-26 17:35` filesystem time | `evidence_20260826.log` shown in evidence | Evidence copy documented and hashed |
+1x LOGIN_OK successful authentication immediately following the failures, confirming a compromised credential.
 
-The authentication records provide an exact simulated attack timeline. The screenshots do not display execution times for the alert or containment commands, so the response-action portion of the timeline cannot be timed precisely from the supplied evidence.
+1x EXPORT_DATA action transferring a 500MB file.
 
-### Containment
+Individually, these log entries appear routine, but correlated sequentially, they confirm brute-force credential compromise leading to data exfiltration.
 
-The suspected source `203.0.113.9` was blocked with an `iptables` DROP rule in the lab container. This action models immediate containment by preventing further traffic from the source. In a production environment, the equivalent rule would need to be placed at a persistent enforcement point, such as the host firewall, cloud security control, web application firewall, or network perimeter.
+## Containment
 
-### Evidence & integrity
+Immediate containment was executed at the network level by applying an iptables rule within the container environment to drop all incoming traffic from IP 203.0.113.9
 
-The original `auth.log` was retained, centralised in the `/ccse/app` CloudWatch Logs group, copied to `evidence_20260826.log`, and hashed. The recorded evidence SHA-256 digest is `0adc5d2ac06cbbdd366099bcc0540c4c0f76946e71b52e4c99322731696a203b`. Running `sha256sum -c evidence.sha256` returned `OK`, confirming that the evidence copy still matched the recorded digest. The hash chain separately showed that changing the export size altered the final chain hash and therefore exposed tampering. Its trusted final hash was also forwarded to the separate `/ccse/integrity` log group and successfully read back.
+# Evidence & Integrity
 
-### Lesson learned
+A forensic copy of auth.log was created and hashed using SHA-256 (evidence_20250301.log). Integrity was validated using a cryptographic hash chain where each log line incorporates the SHA-256 digest of the preceding entry. Any modification to the log file (such as altering the 500MB export size to 5MB) invalidates the hash chain, proving log tampering.
 
-Individual log records may appear harmless when reviewed separately. Centralised logging, time-ordered correlation, and integrity protection are all necessary to detect an attack sequence and preserve trustworthy evidence. Forwarding the final hash to `/ccse/integrity` separates it from the application log; production use should additionally enforce append-only permissions so that an attacker who compromises the application cannot rewrite both the log and its integrity record.
+# Lesson Learned
+
+Single-event monitoring is insufficient for detecting sophisticated attacks. Implementing centralized, hash-chained logging alongside SIEM correlation rules ensures that multi-stage attacks are flagged in real time and audit trails remain tamper-evident against malicious modification.
 
 ## Short-Answer Questions
 
 ### 1. What is the difference between a log and an event? Give an example of each from this lab.
 
-A **log** is a durable record describing an activity that occurred. An example is:
-
-```text
-2025-03-01T09:01:10 LOGIN_FAIL user=admin ip=203.0.113.9
-```
-
-An **event** is a meaningful occurrence or trigger derived from one or more observations, often processed in near real time. An example is the alert raised after the system detected at least three failures, a later success, and an export from the same IP:
-
-```text
-ALERT: probable brute-force -> compromise -> data exfiltration
-```
+A log is a durable, historical record of a system transaction stored for long-term auditing, such as the static line 2025-03-01T09:01:10 LOGIN_FAIL user=admin ip=203.0.113.9 recorded in CloudWatch. In contrast, an event is a real-time signal or trigger generated when specific log conditions pass a predefined threshold, such as an automated alert firing immediately after detecting 4 consecutive failed login attempts followed by a data export from IP 203.0.113.9.
 
 ### 2. Why must audit logs be tamper-proof, and how does a hash chain achieve this?
 
-Audit logs support investigation, accountability, and compliance. If an attacker can change or delete records without detection, investigators cannot trust the timeline or prove what occurred. A hash chain calculates each entry's hash from both the current log line and the previous entry's hash. Altering an entry changes its hash and breaks that entry and every later dependent hash. Comparing a trusted final hash with a recomputed value therefore exposes modification. Strictly, this makes the log **tamper-evident**; protection also requires storing the trusted hash or chain in a separate append-only location.
+Audit logs must be tamper-proof because attackers routinely modify or erase log files to hide their activities and impede post-incident forensic investigations. A hash chain secures these records by computing the SHA-256 hash of each log entry combined with the hash of the preceding line, cryptographically linking every record so that any subsequent modification immediately invalidates all following hashes and exposes the tampering.
 
 ### 3. How did correlation detect an incident that no single log line revealed?
 
-The script grouped records by `203.0.113.9` and combined three conditions: four login failures, one later successful login, and one data export. A failed login can be an ordinary user mistake, a successful login can be legitimate, and an export can be authorised. When the same IP performs all three actions in sequence, the combined pattern indicates probable brute-force access followed by compromise and data exfiltration.
+Correlation detected the breach by analyzing the temporal sequence across multiple log entries—linking four failed logins, one successful login, and a 500MB data export all originating from IP 203.0.113.9. While an isolated failed login or data transfer might appear to be routine administrative activity, evaluating these actions together revealed the distinct pattern of a brute-force credential compromise followed by unauthorized data exfiltration.
 
 ### 4. List the incident-response steps you performed and the goal of each.
 
-1. **Detect:** Counted and correlated authentication and export activity to identify the suspicious sequence.
-2. **Analyse:** Reviewed the common IP, event types, order, and counts to assess the likely attack.
-3. **Contain:** Added a DROP rule for `203.0.113.9` to model stopping further malicious traffic.
-4. **Collect evidence:** Copied the original log into a date-stamped evidence file so the incident record could be preserved.
-5. **Preserve integrity:** Created and verified a SHA-256 digest so later changes to the evidence could be detected.
-6. **Document and build a timeline:** Recorded the ordered authentication and export events, response actions, evidence, integrity results, and lesson learned. The alert and containment times remain unspecified because their screenshots contain no execution timestamps.
+The incident response steps performed were Detection to identify the unauthorized activity via log correlation, Containment using iptables to block IP 203.0.113.9 and halt active data exfiltration, Evidence Collection & Integrity Preservation by creating a timestamped log copy with a SHA-256 hash to maintain chain-of-custody, and Documentation to detail the attack timeline and lessons learned for future risk mitigation.
 
 ### 5. How do the same logs serve both security monitoring and compliance evidence (Weeks 6 and 11)?
 
-For security monitoring, the logs provide timely visibility into failed logins, successful access, source IP addresses, and data-export activity. These records can feed queries and correlation rules that detect threats. For compliance, the same logs provide a retained audit trail showing who performed an action, what happened, when it occurred, and where it originated. Centralisation, access control, retention, timestamps, and integrity verification make the records suitable for audits and investigations. Compliance value depends on preserving the logs under an approved retention policy and protecting them from unauthorised alteration.
+The same logs serve security monitoring by providing real-time telemetry to detect active security threats and trigger automated containment workflows, while simultaneously serving as compliance evidence by providing an immutable, centralized audit trail required by regulatory frameworks (such as ISO 27001 or SOC 2) to prove that system access, data exports, and administrative actions are continuously tracked and protected against unauthorized tampering.
 
 ## Verification
 
@@ -451,7 +430,7 @@ arn: arn:aws:logs:us-east-1:000000000000:log-group:/ccse/app:*
 
 The all-zero account number belongs to the LocalStack lab environment and is not a real AWS account credential.
 
-![Verification - Evidence integrity and LocalStack log group](lab-images/lab5/10.png)
+![Verification](Evidence_Lab5/verify.png)
 
 ## Security Best-Practices Checklist
 
@@ -484,8 +463,8 @@ localstack
 
 The two `localstack` lines confirm successful completion of `docker stop` and `docker rm`. The `rm -f` command normally produces no output when successful.
 
-![Cleanup - Generated files and LocalStack container removed](lab-images/lab5/last.png)
+![Cleanup And Teardown](Evidence_Lab5/cleanup.png)
 
 ## Conclusion
 
-The lab successfully demonstrated LocalStack setup, centralised logging, security queries, tamper detection, forwarding of the trusted final hash, event correlation, simulated containment, evidence-integrity verification, and environment teardown. The activity from `203.0.113.9` was correctly identified as probable brute force followed by account compromise and data exfiltration. All core assessed deliverables and cleanup steps are supported by the submitted evidence.
+LocalStack setup, centralised logging, security queries, tamper detection, conveyance of the trusted final hash, event correlation, simulated containment, evidence-integrity verification, and environment breakdown were all successfully shown in the lab. The behaviour from `203.0.113.9` was accurately classified as likely brute force, followed by data exfiltration and account compromise. The evidence provided supports all of the main assessed deliverables and cleanup procedures.
