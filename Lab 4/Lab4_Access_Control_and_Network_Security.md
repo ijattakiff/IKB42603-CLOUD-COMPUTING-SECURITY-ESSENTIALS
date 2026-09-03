@@ -360,23 +360,23 @@ This output is visible in the Task 6 inspect evidence.
 
 ### Q1. Explain the difference between authentication and authorization using Tasks 1 and 3.
 
-Authentication verifies **who an identity is**. In Task 1, Nginx challenged the client for a username and password: no credentials produced HTTP `401`, while valid credentials produced HTTP `200`. Authorization decides **what an authenticated identity may do**. In Task 3, the `dev` service account was recognized as an identity, but its RBAC role allowed only pod-reading operations. It could list pods but could not create deployments or delete pods. Therefore, authentication precedes authorization, but successful authentication does not automatically grant unrestricted access.
+Authentication confirms an individual's identification. In Task 1, Nginx requested a login and password from the client; HTTP 401 was returned for invalid credentials, while HTTP 200 was returned for acceptable credentials. What an authenticated identity can accomplish is determined by authorisation. The dev service account was identified as an identity in Task 3, but only pod-reading actions were permitted due to its RBAC function. Pods could be listed, however deployments and pod deletions were not possible. As a result, authorisation comes after authentication, yet full access is not always granted after successful authentication.
 
 ### Q2. Why is MFA so effective, and which attacks does it defeat?
 
-MFA requires independent evidence from more than one factor class. A password is something the user knows, while the TOTP generator or authenticator is something the user possesses. A stolen password alone is therefore insufficient. MFA is effective against password guessing, credential stuffing, password reuse, brute-force password attacks, and many attacks based on leaked or phished passwords. TOTP is not a complete defence against real-time adversary-in-the-middle phishing or MFA-fatigue techniques, so phishing-resistant factors are preferable for higher-risk systems.
+Independent evidence from many factor classes is necessary for MFA. Whereas the TOTP generator or authenticator is something the user owns, a password is something the user knows. Therefore, a password that has been stolen is not enough. Password guessing, credential stuffing, password reuse, brute-force password attacks, and several attacks based on compromised or phished credentials are all prevented by MFA. For higher-risk systems, phishing-resistant factors are preferred because TOTP is not a perfect defence against real-time adversary-in-the-middle phishing or MFA-fatigue tactics.
 
 ### Q3. How does network segmentation limit the damage of a compromised web server?
 
-Segmentation places the public-facing web tier and the database on different networks. In this lab, `web` had access only to `frontend-net`, while `db` had access only to `backend-net`; only `app` joined both. If an attacker compromises the web server, the attacker still has no direct network path to Redis. This limits lateral movement, reduces the reachable attack surface, and forces database access through the controlled application tier.
+The database and the public-facing web tier are located on separate networks thanks to segmentation. Only `web` and `db` had access to frontend-net and backend-net, respectively, in this experiment; only `app` connected both. An attacker still lacks a clear network path to Redis even if they manage to breach the web server. This forces database access through the regulated application tier, restricts lateral movement, and decreases the reachable attack surface.
 
 ### Q4. What does a default-deny firewall policy achieve, and how does it relate to cloud security groups?
 
-A default-deny policy drops traffic unless a rule explicitly permits it. The lab's `INPUT DROP` policy allowed only HTTPS on TCP port `443` and loopback traffic. This reduces accidental exposure and makes each permitted path deliberate. Cloud security groups use the same allow-list principle: inbound traffic is denied unless an ingress rule explicitly allows a protocol, port, and source.
+Unless a rule specifically allows it, a default-deny policy removes traffic. Only HTTPS on TCP port `443` and loopback traffic were permitted under the lab's `INPUT DROP` policy. This makes every allowed path intentional and lessens unintentional exposure. The same allow-list idea is applied by cloud security groups: incoming traffic is blocked unless an ingress rule specifically permits a protocol, port, and source.
 
 ### Q5. List the hardening measures applied and the attack surface each one removes.
 
-The core measures were running as a non-root user, mounting the root filesystem read-only, and dropping all Linux capabilities. These controls respectively reduce privilege after service compromise, block filesystem tampering and persistence, and remove access to privileged kernel operations. The container also used `no-new-privileges` to prevent privilege gains and a `tmpfs` mount for non-persistent temporary writes. Finally, an Alpine-based Nginx image was scanned with Trivy to identify known high- and critical-severity package vulnerabilities.
+Running as a non-root user, mounting the root filesystem read-only, and removing all Linux functionality were the fundamental steps. These constraints, in turn, eliminate access to privileged kernel activities, prevent filesystem tampering and persistence, and diminish privilege following service penetration. Additionally, the container employed a `tmpfs` mount for non-persistent temporary writes and `no-new-privileges` to prevent privilege increases. Lastly, Trivy was used to scan an Alpine-based Nginx image for known high- and critical-severity package vulnerabilities.
 
 ## Security best-practices checklist
 
@@ -429,13 +429,6 @@ All required deliverables from the guide are present:
 - Task 4 contains a duplicate `web` container-name warning. The following container list and the final connectivity tests confirm that the required container was already running, so no evidence is missing.
 - The Trivy result is time-specific and covers only the requested `HIGH` and `CRITICAL` severities for `nginx:alpine`; it should not be interpreted as proof that no lower-severity or future vulnerability exists.
 
-## Short Answer Question
-
-**Q1. Explain the difference between authentication and authorization using Tasks 1 and 3.**
-Authentication confirms an individual's identification. In Task 1, Nginx requested a login and password from the client; HTTP 401 was returned for invalid credentials, while HTTP 200 was returned for acceptable credentials. What an authenticated identity can accomplish is determined by authorisation. The dev service account was identified as an identity in Task 3, but only pod-reading actions were permitted due to its RBAC function. Pods could be listed, however deployments and pod deletions were not possible. As a result, authorisation comes after authentication, yet full access is not always granted after successful authentication.
-
-**Q1. Explain the difference between authentication and authorization using Tasks 1 and 3.**
-
 ## Conclusion
 
-The lab successfully combined identity controls, authorization, network controls, and workload hardening. Password authentication rejected anonymous access; TOTP added a second factor; Kubernetes RBAC enforced least privilege; Docker segmentation blocked direct frontend-to-database access; the firewall denied traffic by default; and the hardened container ran non-root with a read-only filesystem, no added capabilities, and no privilege escalation. The accompanying Trivy scan reported zero high- or critical-severity vulnerabilities for the scanned Alpine Nginx image at the time of testing.
+Identity controls, authorisation, network controls, and workload hardening were all successfully integrated in the lab. Anonymous access was denied by password authentication; TOTP added a second factor; Kubernetes RBAC enforced least privilege; Docker segmentation prevented direct frontend-to-database access; the firewall automatically blocked traffic; and the hardened container operated non-root with a read-only filesystem, no additional features, and no privilege escalation. At the time of testing, the accompanying Trivy scan found no high- or critical-severity vulnerabilities in the analysed Alpine Nginx image.
