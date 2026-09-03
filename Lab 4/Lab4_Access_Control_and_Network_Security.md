@@ -68,6 +68,12 @@ Run an Nginx service protected by HTTP Basic authentication and confirm that an 
 
 The `401 Unauthorized` result shows that the service rejected a request with no credentials. The `200 OK` result and response body show that authentication succeeded when valid credentials were supplied.
 
+![Task1](Evidence_Lab4/task1a.png)
+
+![Task1](Evidence_Lab4/task1b.png)
+
+![Task1](Evidence_Lab4/task1c.png)
+
 ## Task 2 — Multi-factor authentication with TOTP
 
 ### Objective
@@ -86,7 +92,9 @@ Generate and validate a six-digit time-based one-time password (TOTP) as a secon
 
 The required successful `MFA OK` result is present. The earlier failed attempt does not invalidate the task; it demonstrates that a wrong or expired TOTP is rejected.
 
-![Task 2 MFA evidence with shared secret and one-time codes redacted](Evidence_Lab4/lab4/task2a.png)
+![Task2](Evidence_Lab4/task2a.png)
+
+![Task2](Evidence_Lab4/task2b.png)
 
 ## Task 3 — Kubernetes authorization with RBAC
 
@@ -144,9 +152,9 @@ Create a service account whose permissions are limited to reading pods, then ver
 
 The results demonstrate least privilege: the developer identity can inspect pods but cannot create deployments or delete pods.
 
-![Task 3 cluster and service-account setup](lab-images/lab4/task3_cluster_setup.png)
+![Task3](Evidence_Lab4/task3a.png)
 
-![Task 3 RBAC results and role-binding verification](lab-images/lab4/task3_rbac_results_and_verification.png)
+![Task3](Evidence_Lab4/task3b.png)
 
 ## Task 4 — Three-tier network segmentation
 
@@ -204,9 +212,11 @@ The frontend cannot resolve or connect directly to the database because it does 
 
 The evidence also shows a duplicate-name warning when `web` was started a second time. The subsequent `docker ps` output confirms that the intended `web`, `app`, and `db` containers were already running, and both connectivity results are valid.
 
-![Task 4 network and container setup](lab-images/lab4/task4_network_setup.png)
+![Task4](Evidence_Lab4/task4a.png)
 
-![Task 4 blocked and reachable connectivity results](lab-images/lab4/task4_segmentation_results.png)
+![Task4](Evidence_Lab4/task4b.png)
+
+![Task4](Evidence_Lab4/task4c.png)
 
 ## Task 5 — Default-deny firewall
 
@@ -241,7 +251,7 @@ num  target  prot  source     destination  options
 
 All inbound traffic is denied unless it matches an explicit allow rule. Port `443/tcp` is permitted, and loopback traffic is retained for local inter-process communication.
 
-![Task 5 default-deny iptables rules](lab-images/lab4/task5_default_deny_firewall.png)
+![Task5](Evidence_Lab4/task5.png)
 
 ## Task 6 — Container hardening and vulnerability scanning
 
@@ -287,9 +297,7 @@ CapDrop=["ALL"]
 SecurityOptions=["no-new-privileges"]
 ```
 
-![Task 6 hardened container startup and logs](lab-images/lab4/task6_hardened_container.png)
-
-![Task 6 inspect verification](lab-images/lab4/task6_inspect_verification.png)
+![Task6](Evidence_Lab4/task6a.png)
 
 4. Trivy was run against the Alpine Nginx image, restricted to high- and critical-severity vulnerabilities.
 
@@ -311,9 +319,9 @@ HIGH/CRITICAL vulnerabilities: 0
 
 The result means that Trivy found no high- or critical-severity operating-system package vulnerabilities in the scanned image and database at that time. It does not guarantee that the image has no vulnerabilities of lower severity or vulnerabilities unknown to the scanner.
 
-![Task 6 Trivy database download and scan](lab-images/lab4/task6_trivy_download_and_scan.png)
+![Task6](Evidence_Lab4/task6b.png)
 
-![Task 6 Trivy report summary](lab-images/lab4/task6_trivy_summary.png)
+![Task6](Evidence_Lab4/task6c.png)
 
 ### Hardening measures and reduced attack surfaces
 
@@ -395,7 +403,7 @@ kind delete cluster --name ccse-lab4
 
 The cleanup output shows removal of the remaining containers, both custom networks, and the `ccse-lab4` kind cluster. `authsvc` had already been stopped earlier and was automatically removed because it was started with `--rm`.
 
-![Cleanup and teardown output](lab-images/lab4/cleanup.png)
+![Cleanup And Teardown](Evidence_Lab4/cleanup.png)
 
 ## Evidence completeness and issues found
 
@@ -420,6 +428,13 @@ All required deliverables from the guide are present:
 - Task 2 contains an initial `MFA FAILED` result, followed by the required successful `MFA OK` result using a fresh code. No repeat screenshot is needed.
 - Task 4 contains a duplicate `web` container-name warning. The following container list and the final connectivity tests confirm that the required container was already running, so no evidence is missing.
 - The Trivy result is time-specific and covers only the requested `HIGH` and `CRITICAL` severities for `nginx:alpine`; it should not be interpreted as proof that no lower-severity or future vulnerability exists.
+
+## Short Answer Question
+
+**Q1. Explain the difference between authentication and authorization using Tasks 1 and 3.**
+Authentication confirms an individual's identification. In Task 1, Nginx requested a login and password from the client; HTTP 401 was returned for invalid credentials, while HTTP 200 was returned for acceptable credentials. What an authenticated identity can accomplish is determined by authorisation. The dev service account was identified as an identity in Task 3, but only pod-reading actions were permitted due to its RBAC function. Pods could be listed, however deployments and pod deletions were not possible. As a result, authorisation comes after authentication, yet full access is not always granted after successful authentication.
+
+**Q1. Explain the difference between authentication and authorization using Tasks 1 and 3.**
 
 ## Conclusion
 
