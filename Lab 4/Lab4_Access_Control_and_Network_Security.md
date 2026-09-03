@@ -84,34 +84,9 @@ Generate and validate a six-digit time-based one-time password (TOTP) as a secon
    oathtool --totp -b "$SECRET"
    ```
 
-2. A user-supplied code was compared with the current expected code.
-
-   ```bash
-   printf 'Enter the 6-digit code: '
-   read CODE
-   EXPECTED=$(oathtool --totp -b "$SECRET")
-
-   if [ "$CODE" = "$EXPECTED" ]; then
-       echo 'MFA OK'
-   else
-       echo 'MFA FAILED'
-   fi
-   ```
-
-3. The first comparison failed because the TOTP had changed or did not match. A fresh code was then generated and immediately validated.
-
-### Result
-
-```text
-TOTP shared secret: [REDACTED]
-TOTP codes: [REDACTED]
-First validation: MFA FAILED
-Fresh-code validation: MFA OK
-```
-
 The required successful `MFA OK` result is present. The earlier failed attempt does not invalidate the task; it demonstrates that a wrong or expired TOTP is rejected.
 
-![Task 2 MFA evidence with shared secret and one-time codes redacted](lab-images/lab4/task2_mfa_redacted.png)
+![Task 2 MFA evidence with shared secret and one-time codes redacted](Evidence_Lab4/lab4/task2a.png)
 
 ## Task 3 — Kubernetes authorization with RBAC
 
