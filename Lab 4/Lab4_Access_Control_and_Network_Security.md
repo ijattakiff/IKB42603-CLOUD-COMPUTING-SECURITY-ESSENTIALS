@@ -68,10 +68,6 @@ Run an Nginx service protected by HTTP Basic authentication and confirm that an 
 
 The `401 Unauthorized` result shows that the service rejected a request with no credentials. The `200 OK` result and response body show that authentication succeeded when valid credentials were supplied.
 
-![Task 1 password setup with credential redacted](lab-images/lab4/task1_password_setup_redacted.png)
-
-![Task 1 authentication results with credential redacted](lab-images/lab4/task1_authentication_results_redacted.png)
-
 ## Task 2 — Multi-factor authentication with TOTP
 
 ### Objective
