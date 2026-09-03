@@ -35,13 +35,7 @@ Run an Nginx service protected by HTTP Basic authentication and confirm that an 
      htpasswd -nbB student '<REDACTED_PASSWORD>' > htpasswd.txt
    ```
 
-2. A static response page was created.
-
-   ```bash
-   printf 'Authenticated OK\n' > index.html
-   ```
-
-3. `default.conf` was configured to protect the page using the mounted password file.
+2. `default.conf` was configured to protect the page using the mounted password file.
 
    ```nginx
    server {
@@ -57,19 +51,7 @@ Run an Nginx service protected by HTTP Basic authentication and confirm that an 
    }
    ```
 
-4. The service was started on host port `8080`. Configuration, credential, and content files were mounted read-only.
-
-   ```bash
-   docker run --rm -d \
-     --name authsvc \
-     -p 8080:80 \
-     -v "$(pwd)/default.conf:/etc/nginx/conf.d/default.conf:ro" \
-     -v "$(pwd)/htpasswd.txt:/etc/nginx/.htpasswd:ro" \
-     -v "$(pwd)/index.html:/usr/share/nginx/html/index.html:ro" \
-     nginx:alpine
-   ```
-
-5. The endpoint was tested without credentials and then with valid credentials.
+3. The endpoint was tested without credentials and then with valid credentials.
 
    ```bash
    curl -s -o /dev/null \
@@ -83,14 +65,6 @@ Run an Nginx service protected by HTTP Basic authentication and confirm that an 
 
    curl -s -u student:'<REDACTED_PASSWORD>' http://localhost:8080
    ```
-
-### Result
-
-```text
-no-creds: 401
-valid-creds: 200
-Authenticated OK
-```
 
 The `401 Unauthorized` result shows that the service rejected a request with no credentials. The `200 OK` result and response body show that authentication succeeded when valid credentials were supplied.
 
