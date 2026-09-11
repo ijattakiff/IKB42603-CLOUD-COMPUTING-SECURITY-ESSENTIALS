@@ -4,11 +4,11 @@
 
 *Lab:* Lab 6
 
-*Name:* MUHAMMAD AMEER BIN IDRIS
+*Name:* MUHAMAD IZZAT A'KIF BIN MOHD SANUSI
 
-*Date:* 9 SEPTEMBER 2026
+*Date:* 11 SEPTEMBER 2026
 
-*ID:* 52215124748
+*ID:* 52215124688
 
 # IKB42603 Lab 6: Object Storage & Data Lifecycle
 
